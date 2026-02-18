@@ -38,14 +38,16 @@ cp -r claude-skills/deepthink ~/.claude/skills/
 这个 skill 来自 [uupm.cc](https://uupm.cc)，需要单独安装：
 
 ```bash
-# 使用官方 CLI 安装
+# 首次安装
 npm install -g uipro-cli
-cd /path/to/your/project
 uipro init --ai claude
 
-# 或手动下载到 skills 目录
-# 访问 https://uupm.cc 获取最新版本
+# 升级到最新版本
+uipro update                    # 更新 CLI
+uipro init --ai claude --force  # 重新安装 skill
 ```
+
+更多选项：`uipro --help`
 
 ## 使用方法
 
