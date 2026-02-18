@@ -9,7 +9,8 @@
 | [deepthink](./deepthink) | 深度思考辅助工具，采用多 agent 协作模式帮助用户澄清目标、收集背景、设计方案、批判审视 |
 | [openclaw-skill-check](./openclaw-skill-check) | OpenClaw skill 验证器，检查 SKILL.md 格式和 metadata.openclaw 结构 |
 | [skill-creator](./skill-creator) | Skill 创建向导，帮助创建新的 skill |
-| [ui-ux-pro-max](./ui-ux-pro-max) | UI/UX 设计智能助手，支持多种框架和设计风格 |
+
+> **注意**: `ui-ux-pro-max` 是第三方 skill，需要单独安装，参见下方说明。
 
 ## 安装方法
 
@@ -20,7 +21,7 @@
 cd ~/.claude/skills
 
 # 克隆仓库
-git clone https://github.com/YOUR_USERNAME/claude-skills.git .
+git clone https://github.com/babyowen/claude-skills.git .
 ```
 
 ### 方法 2：复制单个 skill
@@ -30,6 +31,20 @@ git clone https://github.com/YOUR_USERNAME/claude-skills.git .
 ```bash
 # 复制单个 skill 到你的 skills 目录
 cp -r claude-skills/deepthink ~/.claude/skills/
+```
+
+### UI/UX Pro Max（第三方）
+
+这个 skill 来自 [uupm.cc](https://uupm.cc)，需要单独安装：
+
+```bash
+# 使用官方 CLI 安装
+npm install -g uipro-cli
+cd /path/to/your/project
+uipro init --ai claude
+
+# 或手动下载到 skills 目录
+# 访问 https://uupm.cc 获取最新版本
 ```
 
 ## 使用方法
@@ -50,14 +65,10 @@ claude-skills/
 │   ├── SKILL.md
 │   ├── scripts/
 │   └── references/
-├── skill-creator/          # Skill 创建工具
-│   ├── SKILL.md
-│   ├── scripts/
-│   └── references/
-└── ui-ux-pro-max/          # UI/UX 设计工具
+└── skill-creator/          # Skill 创建工具
     ├── SKILL.md
     ├── scripts/
-    └── data/
+    └── references/
 ```
 
 ## 创建新 Skill

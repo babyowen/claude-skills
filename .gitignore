@@ -23,3 +23,6 @@ __pycache__/
 *.tmp
 .env
 .env.local
+
+# Third-party skills (manually managed)
+ui-ux-pro-max/
