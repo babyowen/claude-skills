@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模板演示 - 多种布局风格</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 80px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0s;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* CSS Variables */
+        :root {
+            --citic-red: #D20A10;
+            --gray-5: #575757;
+            --gray-4: #898989;
+            --gray-3: #B5B5B5;
+            --gray-2: #CACACA;
+            --gray-1: #DDDDDD;
+            --bg-color: #F0F0F0;
+        }
+
+        /* Global Header - Only Slogan */
+        .global-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .global-header .logo-container {
+            display: none;
+        }
+
+        .global-header .slogan-container {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .global-header .slogan-container img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--citic-red);
+            margin-bottom: 10px;
+        }
+
+        .page-header .sub-title {
+            font-size: 1.2rem;
+            color: var(--gray-4);
+        }
+
+        .divider {
+            width: 60px;
+            height: 4px;
+            background: var(--citic-red);
+            margin-bottom: 40px;
+        }
+
+        /* Content wrapper */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== Template 1: 统计数据卡片 ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--citic-red);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: #fff;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--citic-red);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--gray-5);
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            color: #52C41A;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .stat-change.negative {
+            color: var(--citic-red);
+        }
+
+        /* ========== Template 2: 流程步骤 ========== */
+        .process-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+
+        .process-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 40px;
+            right: -50%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--citic-red), var(--gray-3));
+            z-index: 0;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 20px rgba(210, 10, 16, 0.3);
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-5);
+            margin-bottom: 10px;
+        }
+
+        .step-desc {
+            font-size: 0.95rem;
+            color: var(--gray-4);
+            line-height: 1.6;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        /* ========== Template 3: 对比列表 ========== */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 80px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .comparison-side {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .comparison-side.left {
+            border-top: 4px solid var(--citic-red);
+        }
+
+        .comparison-side.right {
+            border-top: 4px solid #52C41A;
+        }
+
+        .comparison-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-side.left .comparison-title {
+            color: var(--citic-red);
+        }
+
+        .comparison-side.right .comparison-title {
+            color: #52C41A;
+        }
+
+        .comparison-list {
+            list-style: none;
+        }
+
+        .comparison-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-1);
+            font-size: 1rem;
+            color: var(--gray-5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-list li:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-list li::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .comparison-side.left .comparison-list li::before {
+            background: var(--citic-red);
+        }
+
+        .comparison-side.right .comparison-list li::before {
+            background: #52C41A;
+        }
+
+        .comparison-vs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-3);
+        }
+
+        /* ========== Template 4: 时间线 ========== */
+        .timeline-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .timeline-container::before {
+            content: "";
+            position: absolute;
+            left: 15px;
+            top: 20px;
+            bottom: 20px;
+            width: 3px;
+            background: linear-gradient(180deg, var(--citic-red), var(--gray-3));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px 0 20px 40px;
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -25px;
+            top: 28px;
+            width: 20px;
+            height: 20px;
+            background: var(--citic-red);
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 3px var(--citic-red);
+        }
+
+        .timeline-date-box {
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: #fff;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-5);
+            margin-bottom: 8px;
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+            color: var(--gray-4);
+            line-height: 1.6;
+        }
+
+        /* ========== Template 5: 图文混排 ========== */
+        .media-text-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .media-image {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .media-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .media-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gray-5);
+            margin-bottom: 20px;
+        }
+
+        .media-content p {
+            font-size: 1.1rem;
+            color: var(--gray-5);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            font-size: 1rem;
+            color: var(--gray-5);
+        }
+
+        .feature-list li svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--citic-red);
+            flex-shrink: 0;
+        }
+
+        /* ========== Template 6: 标签云 ========== */
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .tag-item {
+            background: #fff;
+            border: 2px solid var(--gray-2);
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            color: var(--gray-5);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .tag-item:hover {
+            border-color: var(--citic-red);
+            color: var(--citic-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(210, 10, 16, 0.15);
+        }
+
+        .tag-item.primary {
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .tag-item.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(210, 10, 16, 0.3);
+        }
+
+        /* ========== Template 7: 人物介绍 ========== */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .team-member {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gray-2) 0%, var(--gray-1) 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--gray-4);
+        }
+
+        .member-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-5);
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            font-size: 0.95rem;
+            color: var(--citic-red);
+            margin-bottom: 15px;
+        }
+
+        .member-desc {
+            font-size: 0.9rem;
+            color: var(--gray-4);
+            line-height: 1.6;
+        }
+
+        /* ========== Template 8: 引用/强调 ========== */
+        .quote-highlight {
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-radius: 16px;
+            padding: 50px 60px;
+            color: #fff;
+            position: relative;
+        }
+
+        .quote-highlight::before {
+            content: """;
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 8rem;
+            opacity: 0.2;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-size: 1.8rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-author {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quote-author::before {
+            content: "";
+            width: 50px;
+            height: 2px;
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* ========== Template 9: 进度指示器 ========== */
+        .progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .progress-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-5);
+        }
+
+        .progress-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--citic-red);
+        }
+
+        .progress-bar-bg {
+            height: 12px;
+            background: var(--gray-1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            font-size: 1rem;
+            color: #666;
+            z-index: 100;
+        }
+
+        .keyboard-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            font-size: 0.85rem;
+            color: #999;
+            z-index: 100;
+        }
+
+        .keyboard-hint kbd {
+            background: rgba(0,0,0,0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 2px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: 封面 -->
+        <div class="slide active">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">演示模板库</h1>
+                <p class="sub-title">9种常用页面布局风格</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <p style="font-size: 1.2rem; color: var(--gray-5);">包含：统计卡片、流程步骤、对比列表、时间线、图文混排、标签云、人物介绍、引用强调、进度指示器</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: 统计数据卡片 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板1: 统计数据卡片</h1>
+                <p class="sub-title">适用于展示关键指标和数据概览</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        </div>
+                        <div class="stat-number">2,847</div>
+                        <div class="stat-label">活跃用户数</div>
+                        <div class="stat-change">↑ 12.5%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                        </div>
+                        <div class="stat-number">¥156.8万</div>
+                        <div class="stat-label">本月营收</div>
+                        <div class="stat-change">↑ 8.3%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        </div>
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">系统可用性</div>
+                        <div class="stat-change">↑ 0.2%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        </div>
+                        <div class="stat-number">45ms</div>
+                        <div class="stat-label">平均响应时间</div>
+                        <div class="stat-change negative">↓ 5ms</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: 流程步骤 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板2: 流程步骤</h1>
+                <p class="sub-title">适用于展示工作流程和操作步骤</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="process-container">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">需求分析</div>
+                        <div class="step-desc">深入了解业务目标和用户需求</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">方案设计</div>
+                        <div class="step-desc">制定技术方案和实施计划</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">开发实施</div>
+                        <div class="step-desc">敏捷开发，持续迭代优化</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">测试验收</div>
+                        <div class="step-desc">全面测试，确保质量达标</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">上线运营</div>
+                        <div class="step-desc">平稳上线，持续监控优化</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: 对比列表 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板3: 对比列表</h1>
+                <p class="sub-title">适用于展示方案对比、优劣势分析</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="comparison-container">
+                    <div class="comparison-side left">
+                        <div class="comparison-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            传统方案
+                        </div>
+                        <ul class="comparison-list">
+                            <li>部署周期长，需数周时间</li>
+                            <li>硬件成本高，需要采购服务器</li>
+                            <li>扩展性差，难以应对突发流量</li>
+                            <li>运维复杂，需要专业团队</li>
+                            <li>安全风险高，需自行防护</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-vs">VS</div>
+                    <div class="comparison-side right">
+                        <div class="comparison-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            新方案
+                        </div>
+                        <ul class="comparison-list">
+                            <li>分钟级部署，快速上线</li>
+                            <li>按需付费，成本可控</li>
+                            <li>弹性扩展，自动应对流量变化</li>
+                            <li>全托管服务，免运维</li>
+                            <li>企业级安全，多重防护</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: 时间线 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板4: 时间线</h1>
+                <p class="sub-title">适用于展示项目进度和历史事件</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-date-box">2024年1月</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">项目启动</div>
+                            <div class="timeline-desc">完成需求调研，确定项目目标和范围，组建核心团队</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date-box">2024年3月</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">设计完成</div>
+                            <div class="timeline-desc">完成系统架构设计和UI设计，通过技术评审</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date-box">2024年6月</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">开发完成</div>
+                            <div class="timeline-desc">核心功能开发完成，进入测试阶段</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date-box">2024年8月</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">正式上线</div>
+                            <div class="timeline-desc">系统通过验收，正式投入使用</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: 图文混排 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板5: 图文混排</h1>
+                <p class="sub-title">适用于产品介绍和功能说明</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="media-text-container">
+                    <div class="media-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop" alt="数据分析">
+                    </div>
+                    <div class="media-content">
+                        <h3>智能数据分析平台</h3>
+                        <p>基于人工智能的数据分析平台，帮助企业快速洞察业务数据，发现潜在机会。</p>
+                        <ul class="feature-list">
+                            <li>
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                实时数据处理能力
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                可视化报表生成
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                智能预警和推荐
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: 标签云 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板6: 标签云</h1>
+                <p class="sub-title">适用于技术栈展示、关键词汇总</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="tags-cloud">
+                    <span class="tag-item primary">React</span>
+                    <span class="tag-item">Vue.js</span>
+                    <span class="tag-item primary">TypeScript</span>
+                    <span class="tag-item">Node.js</span>
+                    <span class="tag-item">Python</span>
+                    <span class="tag-item primary">云原生</span>
+                    <span class="tag-item">Kubernetes</span>
+                    <span class="tag-item">Docker</span>
+                    <span class="tag-item">微服务</span>
+                    <span class="tag-item primary">AI/ML</span>
+                    <span class="tag-item">大数据</span>
+                    <span class="tag-item">DevOps</span>
+                    <span class="tag-item">GraphQL</span>
+                    <span class="tag-item">Redis</span>
+                    <span class="tag-item primary">PostgreSQL</span>
+                    <span class="tag-item">MongoDB</span>
+                    <span class="tag-item">Elasticsearch</span>
+                    <span class="tag-item">Nginx</span>
+                    <span class="tag-item primary">敏捷开发</span>
+                    <span class="tag-item">CI/CD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: 人物介绍 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板7: 人物介绍</h1>
+                <p class="sub-title">适用于团队成员介绍、讲师展示</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">张</div>
+                        <div class="member-name">张明</div>
+                        <div class="member-role">项目总监</div>
+                        <div class="member-desc">10年项目管理经验，PMP认证</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">李</div>
+                        <div class="member-name">李华</div>
+                        <div class="member-role">技术负责人</div>
+                        <div class="member-desc">全栈开发专家，架构设计经验丰富</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">王</div>
+                        <div class="member-name">王芳</div>
+                        <div class="member-role">产品经理</div>
+                        <div class="member-desc">用户研究专家，敏锐的产品洞察力</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">陈</div>
+                        <div class="member-name">陈强</div>
+                        <div class="member-role">设计总监</div>
+                        <div class="member-desc">资深UI/UX设计师，多次获奖</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: 引用强调 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板8: 引用强调</h1>
+                <p class="sub-title">适用于重要声明、核心价值观展示</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper" style="justify-content: center;">
+                <div class="quote-highlight">
+                    <div class="quote-text">
+                        我们致力于通过技术创新，为客户创造价值，推动行业进步。每一个项目都是我们对卓越品质的追求，每一次交付都是我们对客户承诺的兑现。
+                    </div>
+                    <div class="quote-author">企业使命宣言</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: 进度指示器 -->
+        <div class="slide">
+            <div class="global-header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板9: 进度指示器</h1>
+                <p class="sub-title">适用于目标达成展示、进度汇报</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="progress-list">
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">用户增长目标</span>
+                            <span class="progress-value">85%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">营收完成率</span>
+                            <span class="progress-value">72%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 72%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">项目进度</span>
+                            <span class="progress-value">100%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">客户满意度</span>
+                            <span class="progress-value">94%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 94%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">10</span>
+    </div>
+
+    <div class="keyboard-hint">
+        <kbd>←</kbd> <kbd>→</kbd> 或 <kbd>Space</kbd> 翻页
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides = [];
+        let totalSlides = 0;
+
+        function init() {
+            slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+            document.getElementById('totalPages').textContent = totalSlides;
+
+            if (slides.length > 0) {
+                slides[0].classList.add('active');
+                updateSlideCounter();
+                animateSlideContent(0);
+            }
+        }
+
+        function goToSlide(index, direction = 'next') {
+            if (index < 0 || index >= totalSlides || index === currentSlide) return;
+
+            const current = slides[currentSlide];
+            const next = slides[index];
+
+            // Remove all state classes from current slide
+            current.classList.remove('active');
+            if (direction === 'next') {
+                current.classList.add('prev');
+            }
+
+            // Prepare next slide position
+            next.classList.remove('prev');
+            if (direction === 'prev') {
+                next.style.transform = 'translateX(-100%)';
+            }
+
+            // Force reflow
+            next.offsetHeight;
+
+            // Show next slide
+            next.style.transform = '';
+            next.classList.add('active');
+
+            currentSlide = index;
+            updateSlideCounter();
+            animateSlideContent(index);
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1, 'next');
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1, 'prev');
+            }
+        }
+
+        function updateSlideCounter() {
+            document.getElementById('currentPage').textContent = currentSlide + 1;
+        }
+
+        function animateSlideContent(index) {
+            const slide = slides[index];
+
+            // Stats cards animation
+            const statCards = slide.querySelectorAll('.stat-card');
+            if (statCards.length > 0) {
+                gsap.fromTo(statCards,
+                    { opacity: 0, y: 40, scale: 0.95 },
+                    { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out', delay: 0.3 }
+                );
+            }
+
+            // Process steps animation
+            const processSteps = slide.querySelectorAll('.process-step');
+            if (processSteps.length > 0) {
+                gsap.fromTo(processSteps,
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.15, ease: 'power2.out', delay: 0.3 }
+                );
+            }
+
+            // Comparison sides animation
+            const comparisonSides = slide.querySelectorAll('.comparison-side');
+            if (comparisonSides.length > 0) {
+                gsap.fromTo(comparisonSides[0],
+                    { opacity: 0, x: -50 },
+                    { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.3 }
+                );
+                gsap.fromTo(comparisonSides[1],
+                    { opacity: 0, x: 50 },
+                    { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.3 }
+                );
+            }
+
+            // Timeline items animation
+            const timelineItems = slide.querySelectorAll('.timeline-item');
+            if (timelineItems.length > 0) {
+                gsap.fromTo(timelineItems,
+                    { opacity: 0, x: -30 },
+                    { opacity: 1, x: 0, duration: 0.5, stagger: 0.2, ease: 'power2.out', delay: 0.3 }
+                );
+            }
+
+            // Media text container animation
+            const mediaContainer = slide.querySelector('.media-text-container');
+            if (mediaContainer) {
+                const image = mediaContainer.querySelector('.media-image');
+                const content = mediaContainer.querySelector('.media-content');
+                gsap.fromTo(image, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.3 });
+                gsap.fromTo(content, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.4 });
+            }
+
+            // Tags cloud animation
+            const tags = slide.querySelectorAll('.tag-item');
+            if (tags.length > 0) {
+                gsap.fromTo(tags,
+                    { opacity: 0, scale: 0.8 },
+                    { opacity: 1, scale: 1, duration: 0.4, stagger: 0.05, ease: 'back.out(1.5)', delay: 0.3 }
+                );
+            }
+
+            // Team members animation
+            const teamMembers = slide.querySelectorAll('.team-member');
+            if (teamMembers.length > 0) {
+                gsap.fromTo(teamMembers,
+                    { opacity: 0, y: 40 },
+                    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out', delay: 0.3 }
+                );
+            }
+
+            // Quote highlight animation
+            const quoteBox = slide.querySelector('.quote-highlight');
+            if (quoteBox) {
+                gsap.fromTo(quoteBox,
+                    { opacity: 0, scale: 0.95 },
+                    { opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out', delay: 0.3 }
+                );
+            }
+
+            // Progress items animation
+            const progressItems = slide.querySelectorAll('.progress-item');
+            if (progressItems.length > 0) {
+                gsap.fromTo(progressItems,
+                    { opacity: 0, x: -30 },
+                    { opacity: 1, x: 0, duration: 0.5, stagger: 0.15, ease: 'power2.out', delay: 0.3 }
+                );
+                // Animate progress bars
+                const progressBars = slide.querySelectorAll('.progress-bar-fill');
+                progressBars.forEach((bar, i) => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    gsap.to(bar, {
+                        width: width,
+                        duration: 1,
+                        delay: 0.5 + (i * 0.2),
+                        ease: 'power2.out'
+                    });
+                });
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                case 'PageDown':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    goToSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    goToSlide(totalSlides - 1);
+                    break;
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

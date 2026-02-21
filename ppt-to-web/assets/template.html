@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT Presentation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0s;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Title Slide - Company Style (FIXED - Do NOT modify) */
+        .slide.title-slide {
+            background: #f0f0f0;
+            position: relative;
+            justify-content: flex-start;
+            align-items: stretch;
+            padding: 0;
+        }
+
+        .slide.title-slide .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide.title-slide .header {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 3.5% 5% 0 5%;
+        }
+
+        .slide.title-slide .logo-container {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slide.title-slide .logo-container img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .slide.title-slide .slogan-container {
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slide.title-slide .slogan-container img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .slide.title-slide .main-content {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 12% 5% 8% 10%;
+        }
+
+        .slide.title-slide .main-content h1 {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+            text-align: left;
+            letter-spacing: 0;
+        }
+
+        .slide.title-slide .main-content .subtitle {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: #000;
+            text-align: left;
+            letter-spacing: 0;
+        }
+
+        .slide.title-slide .footer {
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+            bottom: 38%;
+            padding: 0 5% 0 10%;
+            text-align: left;
+        }
+
+        .slide.title-slide .footer .date {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 1.5rem;
+            color: #000;
+        }
+
+        /* ========== CSS Variables for CITIC Colors ========== */
+        :root {
+            --citic-red: #D20A10;
+            --gray-5: #575757;
+            --gray-4: #898989;
+            --gray-3: #B5B5B5;
+            --gray-2: #CACACA;
+            --gray-1: #DDDDDD;
+            --bg-color: #F0F0F0;
+        }
+
+        /* ========== Content Slide Styles ========== */
+        /* Content Slide */
+        .slide.content-slide {
+            background: var(--bg-color);
+            padding: 60px 80px;
+        }
+
+        .slide.content-slide .slide-content h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: var(--citic-red);
+            text-align: left;
+        }
+
+        .slide.content-slide .slide-content ul {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide.content-slide .slide-content li {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+            color: var(--gray-5);
+            opacity: 0;
+            line-height: 1.6;
+        }
+
+        .slide.content-slide .slide-content li.visible {
+            opacity: 1;
+        }
+
+        .slide.content-slide .slide-content li:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.5em;
+            width: 10px;
+            height: 10px;
+            background: var(--citic-red);
+            border-radius: 50%;
+        }
+
+        /* ========== Global Header - Only Slogan ========== */
+        .global-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .global-header .logo-container {
+            display: none;
+        }
+
+        .global-header .slogan-container {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .global-header .slogan-container img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* ========== Page Header Styles ========== */
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--citic-red);
+            margin-bottom: 10px;
+        }
+
+        .page-header .sub-title {
+            font-size: 1.2rem;
+            color: var(--gray-4);
+        }
+
+        /* Divider Line */
+        .divider {
+            width: 60px;
+            height: 4px;
+            background: var(--citic-red);
+            margin-bottom: 40px;
+        }
+
+        /* ========== Card Styles ========== */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+
+        .card-container-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .card-container-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--citic-red);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(210, 10, 16, 0.15);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+        }
+
+        .card-number {
+            width: 40px;
+            height: 40px;
+            background: var(--citic-red);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-5);
+            margin-bottom: 12px;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: var(--gray-5);
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .card-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--gray-1);
+            color: var(--gray-5);
+            font-size: 0.8rem;
+            border-radius: 20px;
+            margin-top: 15px;
+            align-self: flex-start;
+        }
+
+        /* ========== Stats Card ========== */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--citic-red);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--citic-red);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--gray-5);
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            color: #52C41A;
+            margin-top: 8px;
+        }
+
+        .stat-change.negative {
+            color: var(--citic-red);
+        }
+
+        /* ========== Info Box ========== */
+        .info-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid var(--citic-red);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .info-box-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-5);
+            margin-bottom: 10px;
+        }
+
+        .info-box-content {
+            font-size: 0.95rem;
+            color: var(--gray-5);
+            line-height: 1.7;
+        }
+
+        /* ========== Highlight Box ========== */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+            border-radius: 12px;
+            padding: 30px;
+            color: #fff;
+        }
+
+        .highlight-box .box-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box .box-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* ========== Timeline ========== */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: var(--gray-3);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -22px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            background: var(--citic-red);
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 3px var(--citic-red);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--citic-red);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-5);
+            margin-bottom: 8px;
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+            color: var(--gray-5);
+            line-height: 1.6;
+        }
+
+        /* ========== Progress Bar ========== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--citic-red);
+            width: 0%;
+            z-index: 100;
+        }
+
+        /* Two Column Slide */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            text-align: left;
+        }
+
+        .column h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #c41230;
+            font-weight: 600;
+        }
+
+        .column p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .column li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 10px;
+            opacity: 0;
+        }
+
+        .column li.visible {
+            opacity: 1;
+        }
+
+        .column li:before {
+            content: "●";
+            position: absolute;
+            left: 0;
+            color: #c41230;
+            font-size: 0.6rem;
+            top: 0.4em;
+        }
+
+        /* Image Slide */
+        .image-container {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Quote Slide */
+        .slide.quote-slide {
+            background: #f0f0f0;
+        }
+
+        .slide.quote-slide .slide-content {
+            max-width: 900px;
+        }
+
+        .quote {
+            font-size: 2rem;
+            font-style: normal;
+            color: #333;
+            line-height: 1.8;
+            position: relative;
+            padding: 0 60px;
+        }
+
+        .quote:before,
+        .quote:after {
+            content: "\"";
+            font-size: 4rem;
+            color: #c41230;
+            position: absolute;
+            opacity: 0.4;
+        }
+
+        .quote:before {
+            top: -20px;
+            left: 0;
+        }
+
+        .quote:after {
+            bottom: -40px;
+            right: 0;
+        }
+
+        .quote-author {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        /* Code Slide */
+        .code-container {
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: left;
+            width: 100%;
+            max-width: 900px;
+            overflow-x: auto;
+        }
+
+        .code-container pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .code-container code {
+            color: #e0e0e0;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            font-size: 1rem;
+            color: #666;
+            z-index: 100;
+        }
+
+        /* Keyboard Hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            font-size: 0.85rem;
+            color: #999;
+            z-index: 100;
+        }
+
+        .keyboard-hint kbd {
+            background: rgba(0,0,0,0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 2px;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 30px;
+            }
+
+            .slide.title-slide .slide-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .slide.content-slide .slide-content h2 {
+                font-size: 2rem;
+            }
+
+            .slide.content-slide .slide-content li {
+                font-size: 1.2rem;
+            }
+
+            .two-columns {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .keyboard-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slides will be generated here -->
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">1</span>
+    </div>
+
+    <div class="keyboard-hint">
+        <kbd>←</kbd> <kbd>→</kbd> 或 <kbd>Space</kbd> 翻页
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides = [];
+        let totalSlides = 0;
+
+        // Initialize presentation
+        function init() {
+            slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+
+            document.getElementById('totalPages').textContent = totalSlides;
+
+            // Show first slide
+            if (slides.length > 0) {
+                slides[0].classList.add('active');
+                updateSlideCounter();
+                animateSlideContent(0);
+            }
+        }
+
+        // Navigate to specific slide
+        function goToSlide(index, direction = 'next') {
+            if (index < 0 || index >= totalSlides || index === currentSlide) return;
+
+            const current = slides[currentSlide];
+            const next = slides[index];
+
+            // Remove active state from current slide
+            current.classList.remove('active');
+            if (direction === 'next') {
+                current.classList.add('prev');
+            }
+
+            // Prepare next slide position for prev direction
+            next.classList.remove('prev');
+            if (direction === 'prev') {
+                next.style.transform = 'translateX(-100%)';
+            }
+
+            // Force reflow
+            next.offsetHeight;
+
+            // Show next slide
+            next.style.transform = '';
+            next.classList.add('active');
+
+            // Reset list item animations on current slide
+            const currentListItems = current.querySelectorAll('li');
+            currentListItems.forEach(li => li.classList.remove('visible'));
+
+            currentSlide = index;
+            updateSlideCounter();
+            animateSlideContent(index);
+        }
+
+        // Go to next slide
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1, 'next');
+            }
+        }
+
+        // Go to previous slide
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1, 'prev');
+            }
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            document.getElementById('currentPage').textContent = currentSlide + 1;
+        }
+
+        // Animate slide content (list items, etc.)
+        function animateSlideContent(index) {
+            const slide = slides[index];
+            const listItems = slide.querySelectorAll('li');
+
+            if (listItems.length > 0) {
+                listItems.forEach((li, i) => {
+                    setTimeout(() => {
+                        li.classList.add('visible');
+                    }, 200 + (i * 150));
+                });
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                case 'PageDown':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    goToSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    goToSlide(totalSlides - 1);
+                    break;
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

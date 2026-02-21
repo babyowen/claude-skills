@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作汇报演示</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0s;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Title Slide - Company Style */
+        .slide.title-slide {
+            background: #f0f0f0;
+            position: relative;
+            justify-content: flex-start;
+            align-items: stretch;
+            padding: 0;
+        }
+
+        .slide.title-slide .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide.title-slide .header {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 3.5% 5% 0 5%;
+        }
+
+        .slide.title-slide .logo-container {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slide.title-slide .logo-container img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .slide.title-slide .slogan-container {
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slide.title-slide .slogan-container img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .slide.title-slide .main-content {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 12% 5% 8% 10%;
+        }
+
+        .slide.title-slide .main-content h1 {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+            text-align: left;
+            letter-spacing: 0;
+        }
+
+        .slide.title-slide .main-content .subtitle {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: #000;
+            text-align: left;
+            letter-spacing: 0;
+        }
+
+        .slide.title-slide .footer {
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+            bottom: 38%;
+            padding: 0 5% 0 10%;
+            text-align: left;
+        }
+
+        .slide.title-slide .footer .date {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 1.5rem;
+            color: #000;
+        }
+
+        /* Content Slide */
+        .slide.content-slide {
+            background: #f0f0f0;
+            padding: 60px 80px;
+        }
+
+        .slide.content-slide .slide-content h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #000;
+            text-align: left;
+        }
+
+        .slide.content-slide .slide-content ul {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide.content-slide .slide-content li {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+            color: #333;
+            opacity: 0;
+            line-height: 1.6;
+            transition: opacity 0.4s ease;
+        }
+
+        .slide.content-slide .slide-content li.visible {
+            opacity: 1;
+        }
+
+        .slide.content-slide .slide-content li:before {
+            content: "●";
+            position: absolute;
+            left: 0;
+            color: #c41230;
+            font-size: 0.8rem;
+            top: 0.3em;
+        }
+
+        /* Two Column Slide */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            text-align: left;
+        }
+
+        .column h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #c41230;
+            font-weight: 600;
+        }
+
+        .column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .column li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .column li.visible {
+            opacity: 1;
+        }
+
+        .column li:before {
+            content: "●";
+            position: absolute;
+            left: 0;
+            color: #c41230;
+            font-size: 0.6rem;
+            top: 0.4em;
+        }
+
+        /* Quote Slide */
+        .slide.quote-slide {
+            background: #f0f0f0;
+        }
+
+        .slide.quote-slide .slide-content {
+            max-width: 900px;
+        }
+
+        .quote {
+            font-size: 2rem;
+            font-style: normal;
+            color: #333;
+            line-height: 1.8;
+            position: relative;
+            padding: 0 60px;
+        }
+
+        .quote:before,
+        .quote:after {
+            content: "\"";
+            font-size: 4rem;
+            color: #c41230;
+            position: absolute;
+            opacity: 0.4;
+        }
+
+        .quote:before {
+            top: -20px;
+            left: 0;
+        }
+
+        .quote:after {
+            bottom: -40px;
+            right: 0;
+        }
+
+        .quote-author {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        /* Navigation UI - Hidden */
+        .nav-controls {
+            display: none;
+        }
+
+        /* Slide Counter - Hidden */
+        .slide-counter {
+            display: none;
+        }
+
+        /* Keyboard Hint - Hidden */
+        .keyboard-hint {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 30px;
+            }
+
+            .slide.title-slide .main-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .slide.content-slide .slide-content h2 {
+                font-size: 2rem;
+            }
+
+            .slide.content-slide .slide-content li {
+                font-size: 1.2rem;
+            }
+
+            .two-columns {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .keyboard-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <img class="bg-pattern" src="../assets/fm-background.png" alt="">
+            <div class="header">
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="../assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="main-content">
+                <h1>工作汇报模板</h1>
+                <div class="subtitle">财务会计部</div>
+            </div>
+            <div class="footer">
+                <div class="date">2025年2月</div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Content -->
+        <div class="slide content-slide">
+            <div class="slide-content">
+                <h2>本期重点工作</h2>
+                <ul>
+                    <li>完成年度预算编制工作，确保各部门预算合理分配</li>
+                    <li>优化财务报表流程，提升月度结账效率</li>
+                    <li>推进财务系统升级，实现数据自动化采集</li>
+                    <li>加强内控合规检查，降低运营风险</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Two Column -->
+        <div class="slide content-slide">
+            <div class="slide-content">
+                <h2>收支对比分析</h2>
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>收入情况</h3>
+                        <ul>
+                            <li>利息收入同比增长 12%</li>
+                            <li>手续费收入保持稳定</li>
+                            <li>投资收益超出预期</li>
+                            <li>其他收入略有下降</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>支出情况</h3>
+                        <ul>
+                            <li>运营成本有效控制</li>
+                            <li>人力成本合理增长</li>
+                            <li>科技投入持续加大</li>
+                            <li>合规成本有所上升</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Quote -->
+        <div class="slide quote-slide">
+            <div class="slide-content">
+                <div class="quote">财务管理的核心不是数字，而是对业务的理解和对风险的把控。</div>
+                <div class="quote-author">— 管理理念</div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Conclusion -->
+        <div class="slide content-slide">
+            <div class="slide-content">
+                <h2>下一步计划</h2>
+                <ul>
+                    <li>持续优化财务分析模型，提升预测准确性</li>
+                    <li>深化业财融合，加强与各部门协作</li>
+                    <li>完善风险预警机制，做到防患于未然</li>
+                    <li>推进数字化转型，打造智慧财务平台</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides = [];
+        let totalSlides = 0;
+
+        function init() {
+            slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+
+            if (slides.length > 0) {
+                slides[0].classList.add('active');
+                animateSlideContent(0);
+            }
+        }
+
+        function goToSlide(index, direction = 'next') {
+            if (index < 0 || index >= totalSlides || index === currentSlide) return;
+
+            const current = slides[currentSlide];
+            const next = slides[index];
+
+            current.classList.remove('active');
+            current.classList.remove('prev');
+            current.style.transform = direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
+
+            const currentListItems = current.querySelectorAll('li');
+            currentListItems.forEach(li => li.classList.remove('visible'));
+
+            next.classList.remove('prev');
+            next.style.transform = '';
+            next.classList.add('active');
+
+            currentSlide = index;
+            animateSlideContent(index);
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1, 'next');
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1, 'prev');
+            }
+        }
+
+        function animateSlideContent(index) {
+            const slide = slides[index];
+            const listItems = slide.querySelectorAll('li');
+
+            if (listItems.length > 0) {
+                listItems.forEach((li, i) => {
+                    setTimeout(() => {
+                        li.classList.add('visible');
+                    }, 200 + (i * 150));
+                });
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                case 'PageDown':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    goToSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    goToSlide(totalSlides - 1);
+                    break;
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
