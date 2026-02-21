@@ -15,12 +15,34 @@ This skill transforms structured PPT outlines into fully functional HTML present
 
 **The output MUST be a single, self-contained HTML file.**
 
-- All CSS must be embedded in `<style>` tags within the HTML
-- All JavaScript must be embedded in `<script>` tags within the HTML
-- External dependencies (like GSAP) must be loaded via CDN
-- **Images**: Use base64 encoding OR reference external URLs - the user will handle image files separately
-- The HTML file must work when opened directly in any browser without a server
+- All CSS and JavaScript are automatically inlined by Vite build process
+- GSAP library is bundled inline (no CDN required, works offline)
+- **Images**: Automatically converted to Base64 and embedded during build
+- The HTML file works when opened directly in any browser without internet
 - This ensures the file can be easily copied and shared
+
+## Build Process
+
+**IMPORTANT: The final HTML is generated using Vite.**
+
+```bash
+# Install dependencies (first time only)
+npm install
+
+# Build the single HTML file
+npm run build
+```
+
+The build process:
+1. Bundles all JavaScript (including GSAP) inline
+2. Inlines all CSS
+3. Converts all images to Base64 and embeds them
+4. Outputs a single `dist/index.html` file that works offline
+
+**For development:**
+```bash
+npm run dev  # Start dev server with hot reload
+```
 
 ## CRITICAL REQUIREMENT: Color Scheme (FIXED - Do NOT Change)
 
@@ -45,9 +67,10 @@ This skill transforms structured PPT outlines into fully functional HTML present
 
 **Core workflow:**
 1. Parse user-provided PPT outline
-2. Generate HTML slides based on outline structure
-3. Apply GSAP animations for engaging transitions
-4. Output a complete, self-contained HTML file
+2. Modify `src/index.html` with slide content
+3. Add images to `src/assets/` directory
+4. Run `npm run build` to generate single HTML file
+5. Output: `dist/index.html` - self-contained, works offline
 
 ## Quick Start
 
@@ -58,9 +81,9 @@ User: "帮我生成一个关于产品介绍的演示，包含标题页、核心�
 
 Claude will:
 1. Parse the request into slide structure
-2. Generate HTML using the template from `assets/template.html`
-3. Include GSAP animations for smooth transitions
-4. Provide the complete HTML file
+2. Modify `src/index.html` with the slide content
+3. Run `npm run build` to generate the single HTML file
+4. Output file: `dist/index.html`
 
 ## Content Slide Templates - Choose Based on Content Type
 
@@ -182,13 +205,18 @@ slides:
       - "Point 2"
 ```
 
-### Step 3: Generate HTML
+### Step 3: Generate HTML Source
 
-Read the template from `assets/template.html` and:
+Modify `src/index.html`:
 
-1. **Preserve the structure:** Keep all CSS and JavaScript intact
+1. **Preserve the structure:** The HTML imports `main.js` (includes GSAP) and `styles.css`
 2. **Inject slides:** Replace the `<!-- Slides will be generated here -->` comment with actual slide HTML
-3. **Map slide types to HTML:**
+3. **Add images:** Place images in `src/assets/` and reference them (they'll be converted to Base64 during build)
+4. **Map slide types to HTML:**
+
+### Step 4: Build and Output
+
+Run `npm run build` to generate `dist/index.html` - the final single self-contained HTML file.
 
 ## Cover Page (Title Slide) - FIXED DESIGN SPECIFICATION
 
@@ -229,9 +257,9 @@ Read the template from `assets/template.html` and:
 | **主内容区** | padding: 12% 5% 8% 10%（上右下左） |
 
 ### Required Image Files:
-- `assets/logo.png` - 公司Logo
-- `assets/slogon.png` - 公司Slogan
-- `assets/fm-background.png` - 背景装饰图
+- `src/assets/logo.png` - 公司Logo
+- `src/assets/slogon.png` - 公司Slogan
+- `src/assets/fm-background.png` - 背景装饰图
 
 ## Global Header - REQUIRED on ALL Content Slides
 
@@ -270,10 +298,6 @@ Read the template from `assets/template.html` and:
     </div>
 </div>
 ```
-
-### Step 4: Output the File
-
-Write the complete HTML to a file with a descriptive name (e.g., `presentation.html`, `product-intro.html`).
 
 ## Core Design Principle: One-Key Navigation
 
@@ -374,12 +398,25 @@ For charts and graphs:
 
 ## Resources
 
-- **Template:** `assets/template.html` - Master template with all CSS, JavaScript, and component styles
-- **Outline Format:** `references/outline_format.md` - Detailed specification for PPT outline structure
+### Project Structure
+```
+ppt-to-web/
+├── src/
+│   ├── index.html          # Entry HTML template
+│   ├── main.js             # Slide logic + GSAP animations
+│   ├── styles.css          # All styles
+│   └── assets/             # Images (converted to Base64 on build)
+├── dist/
+│   └── index.html          # Final single-file output (after build)
+├── package.json            # Dependencies (Vite, GSAP)
+└── vite.config.js          # Build configuration
+```
+
+### Files
+- **Source Template:** `src/index.html` - Master HTML template
+- **Styles:** `src/styles.css` - All CSS styles
+- **Scripts:** `src/main.js` - Slide navigation and GSAP animations
+- **Build Config:** `vite.config.js` - Vite + single-file plugin configuration
 - **Demo Files:**
   - `demos/cover-page-demo.html` - **REQUIRED cover page template** - Every presentation MUST follow this exact design
   - `demos/templates.html` - Complete showcase of all 9 content templates with examples
-- **Assets:**
-  - `assets/logo.png` - Company logo for cover page
-  - `assets/slogon.png` - Company slogan for headers
-  - `assets/fm-background.png` - Cover page background image

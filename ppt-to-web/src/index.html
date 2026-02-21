@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT Presentation</title>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <img class="bg-pattern" src="./assets/fm-background.png" alt="">
+            <div class="header">
+                <div class="logo-container">
+                    <img src="./assets/logo.png" alt="Logo">
+                </div>
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="main-content">
+                <h1>PPT 演示标题</h1>
+                <div class="subtitle">副标题 - 部门名称</div>
+            </div>
+            <div class="footer">
+                <div class="date">2025年2月</div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Content -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="slide-content">
+                <h2>核心内容</h2>
+                <ul>
+                    <li>第一点：这是第一个要点内容</li>
+                    <li>第二点：这是第二个要点内容</li>
+                    <li>第三点：这是第三个要点内容</li>
+                    <li>第四点：这是第四个要点内容</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Cards -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="slide-content" style="width: 100%;">
+                <div class="page-header">
+                    <h1 class="main-title">核心特性</h1>
+                    <p class="sub-title">三大核心优势</p>
+                </div>
+                <div class="divider"></div>
+                <div class="card-container card-container-3">
+                    <div class="card">
+                        <div class="card-number">1</div>
+                        <div class="card-title">高效便捷</div>
+                        <div class="card-desc">快速完成转换，节省大量时间</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-number">2</div>
+                        <div class="card-title">动画丰富</div>
+                        <div class="card-desc">GSAP 提供流畅的动画效果</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-number">3</div>
+                        <div class="card-title">离线可用</div>
+                        <div class="card-desc">单文件输出，无需网络</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: 统计数据卡片 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板1: 统计数据卡片</h1>
+                <p class="sub-title">适用于展示关键指标和数据概览</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        </div>
+                        <div class="stat-number">2,847</div>
+                        <div class="stat-label">活跃用户数</div>
+                        <div class="stat-change">↑ 12.5%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                        </div>
+                        <div class="stat-number">¥156.8万</div>
+                        <div class="stat-label">本月营收</div>
+                        <div class="stat-change">↑ 8.3%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        </div>
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">系统可用性</div>
+                        <div class="stat-change">↑ 0.2%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        </div>
+                        <div class="stat-number">45ms</div>
+                        <div class="stat-label">平均响应时间</div>
+                        <div class="stat-change negative">↓ 5ms</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: 流程步骤 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板2: 流程步骤</h1>
+                <p class="sub-title">适用于展示工作流程和操作步骤</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="process-container">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">需求分析</div>
+                        <div class="step-desc">深入了解业务目标和用户需求</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">方案设计</div>
+                        <div class="step-desc">制定技术方案和实施计划</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">开发实施</div>
+                        <div class="step-desc">敏捷开发，持续迭代优化</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">测试验收</div>
+                        <div class="step-desc">全面测试，确保质量达标</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">上线运营</div>
+                        <div class="step-desc">平稳上线，持续监控优化</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: 对比列表 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板3: 对比列表</h1>
+                <p class="sub-title">适用于展示方案对比、优劣势分析</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="comparison-container">
+                    <div class="comparison-side left">
+                        <div class="comparison-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            传统方案
+                        </div>
+                        <ul class="comparison-list">
+                            <li>部署周期长，需数周时间</li>
+                            <li>硬件成本高，需要采购服务器</li>
+                            <li>扩展性差，难以应对突发流量</li>
+                            <li>运维复杂，需要专业团队</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-vs">VS</div>
+                    <div class="comparison-side right">
+                        <div class="comparison-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            新方案
+                        </div>
+                        <ul class="comparison-list">
+                            <li>分钟级部署，快速上线</li>
+                            <li>按需付费，成本可控</li>
+                            <li>弹性扩展，自动应对流量变化</li>
+                            <li>全托管服务，免运维</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: 时间线 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板4: 时间线</h1>
+                <p class="sub-title">适用于展示项目进度和历史事件</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="timeline-container">
+                    <div class="timeline-item-card">
+                        <div class="timeline-date-box">2024年1月</div>
+                        <div class="timeline-content-card">
+                            <div class="timeline-title-card">项目启动</div>
+                            <div class="timeline-desc-card">完成需求调研，确定项目目标和范围，组建核心团队</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item-card">
+                        <div class="timeline-date-box">2024年3月</div>
+                        <div class="timeline-content-card">
+                            <div class="timeline-title-card">设计完成</div>
+                            <div class="timeline-desc-card">完成系统架构设计和UI设计，通过技术评审</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item-card">
+                        <div class="timeline-date-box">2024年6月</div>
+                        <div class="timeline-content-card">
+                            <div class="timeline-title-card">开发完成</div>
+                            <div class="timeline-desc-card">核心功能开发完成，进入测试阶段</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item-card">
+                        <div class="timeline-date-box">2024年8月</div>
+                        <div class="timeline-content-card">
+                            <div class="timeline-title-card">正式上线</div>
+                            <div class="timeline-desc-card">系统通过验收，正式投入使用</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: 标签云 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板5: 标签云</h1>
+                <p class="sub-title">适用于技术栈展示、关键词汇总</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="tags-cloud">
+                    <span class="tag-item primary">React</span>
+                    <span class="tag-item">Vue.js</span>
+                    <span class="tag-item primary">TypeScript</span>
+                    <span class="tag-item">Node.js</span>
+                    <span class="tag-item">Python</span>
+                    <span class="tag-item primary">云原生</span>
+                    <span class="tag-item">Kubernetes</span>
+                    <span class="tag-item">Docker</span>
+                    <span class="tag-item">微服务</span>
+                    <span class="tag-item primary">AI/ML</span>
+                    <span class="tag-item">大数据</span>
+                    <span class="tag-item">DevOps</span>
+                    <span class="tag-item">GraphQL</span>
+                    <span class="tag-item">Redis</span>
+                    <span class="tag-item primary">PostgreSQL</span>
+                    <span class="tag-item">MongoDB</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: 人物介绍 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板6: 人物介绍</h1>
+                <p class="sub-title">适用于团队成员介绍、讲师展示</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">张</div>
+                        <div class="member-name">张明</div>
+                        <div class="member-role">项目总监</div>
+                        <div class="member-desc">10年项目管理经验，PMP认证</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">李</div>
+                        <div class="member-name">李华</div>
+                        <div class="member-role">技术负责人</div>
+                        <div class="member-desc">全栈开发专家，架构设计经验丰富</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">王</div>
+                        <div class="member-name">王芳</div>
+                        <div class="member-role">产品经理</div>
+                        <div class="member-desc">用户研究专家，敏锐的产品洞察力</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">陈</div>
+                        <div class="member-name">陈强</div>
+                        <div class="member-role">设计总监</div>
+                        <div class="member-desc">资深UI/UX设计师，多次获奖</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: 引用强调 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板7: 引用强调</h1>
+                <p class="sub-title">适用于重要声明、核心价值观展示</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper" style="justify-content: center;">
+                <div class="quote-highlight">
+                    <div class="quote-text">
+                        我们致力于通过技术创新，为客户创造价值，推动行业进步。每一个项目都是我们对卓越品质的追求，每一次交付都是我们对客户承诺的兑现。
+                    </div>
+                    <div class="quote-author">企业使命宣言</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: 进度指示器 -->
+        <div class="slide content-slide">
+            <div class="global-header">
+                <div class="slogan-container">
+                    <img src="./assets/slogon.png" alt="Slogan">
+                </div>
+            </div>
+            <div class="page-header">
+                <h1 class="main-title">模板8: 进度指示器</h1>
+                <p class="sub-title">适用于目标达成展示、进度汇报</p>
+            </div>
+            <div class="divider"></div>
+            <div class="content-wrapper">
+                <div class="progress-list">
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">用户增长目标</span>
+                            <span class="progress-value">85%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">营收完成率</span>
+                            <span class="progress-value">72%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 72%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">项目进度</span>
+                            <span class="progress-value">100%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="progress-label">客户满意度</span>
+                            <span class="progress-value">94%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 94%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">1</span>
+    </div>
+
+    <div class="keyboard-hint">
+        <kbd>←</kbd> <kbd>→</kbd> 或 <kbd>Space</kbd> 翻页
+    </div>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

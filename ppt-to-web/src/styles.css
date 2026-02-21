@@ -1,0 +1,1239 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f0f0f0;
+    color: #333;
+}
+
+.presentation-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.slide.prev {
+    transform: translateX(-100%);
+}
+
+.slide-content {
+    max-width: 1200px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Title Slide - Company Style (FIXED - Do NOT modify) */
+.slide.title-slide {
+    background: #f0f0f0;
+    position: relative;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0;
+}
+
+.slide.title-slide .bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.slide.title-slide .header {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 3.5% 5% 0 5%;
+}
+
+.slide.title-slide .logo-container {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.slide.title-slide .logo-container img {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.slide.title-slide .slogan-container {
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.slide.title-slide .slogan-container img {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.slide.title-slide .main-content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 12% 5% 8% 10%;
+}
+
+.slide.title-slide .main-content h1 {
+    font-family: "KaiTi", "STKaiti", "楷体", serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 20px;
+    text-align: left;
+    letter-spacing: 0;
+}
+
+.slide.title-slide .main-content .subtitle {
+    font-family: "KaiTi", "STKaiti", "楷体", serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #000;
+    text-align: left;
+    letter-spacing: 0;
+}
+
+.slide.title-slide .footer {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    bottom: 38%;
+    padding: 0 5% 0 10%;
+    text-align: left;
+}
+
+.slide.title-slide .footer .date {
+    font-family: "KaiTi", "STKaiti", "楷体", serif;
+    font-size: 1.5rem;
+    color: #000;
+}
+
+/* ========== CSS Variables for CITIC Colors ========== */
+:root {
+    --citic-red: #D20A10;
+    --gray-5: #575757;
+    --gray-4: #898989;
+    --gray-3: #B5B5B5;
+    --gray-2: #CACACA;
+    --gray-1: #DDDDDD;
+    --bg-color: #F0F0F0;
+}
+
+/* ========== Content Slide Styles ========== */
+/* Content Slide */
+.slide.content-slide {
+    background: var(--bg-color);
+    padding: 60px 80px;
+}
+
+.slide.content-slide .slide-content h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: var(--citic-red);
+    text-align: left;
+}
+
+.slide.content-slide .slide-content ul {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+}
+
+.slide.content-slide .slide-content li {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    padding-left: 30px;
+    position: relative;
+    color: var(--gray-5);
+    opacity: 0;
+    line-height: 1.6;
+}
+
+.slide.content-slide .slide-content li.visible {
+    opacity: 1;
+}
+
+.slide.content-slide .slide-content li:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 10px;
+    height: 10px;
+    background: var(--citic-red);
+    border-radius: 50%;
+}
+
+/* ========== Global Header - Only Slogan ========== */
+.global-header {
+    position: absolute;
+    top: 35px;
+    right: 40px;
+    z-index: 10;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.global-header .logo-container {
+    display: none;
+}
+
+.global-header .slogan-container {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.global-header .slogan-container img {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* ========== Page Header Styles ========== */
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header .main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--citic-red);
+    margin-bottom: 10px;
+}
+
+.page-header .sub-title {
+    font-size: 1.2rem;
+    color: var(--gray-4);
+}
+
+/* Divider Line */
+.divider {
+    width: 60px;
+    height: 4px;
+    background: var(--citic-red);
+    margin-bottom: 40px;
+}
+
+/* ========== Card Styles ========== */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    flex: 1;
+}
+
+.card-container-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.card-container-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--citic-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(210, 10, 16, 0.15);
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.card-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+}
+
+.card-number {
+    width: 40px;
+    height: 40px;
+    background: var(--citic-red);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gray-5);
+    margin-bottom: 12px;
+}
+
+.card-desc {
+    font-size: 0.95rem;
+    color: var(--gray-5);
+    line-height: 1.7;
+    flex: 1;
+}
+
+.card-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--gray-1);
+    color: var(--gray-5);
+    font-size: 0.8rem;
+    border-radius: 20px;
+    margin-top: 15px;
+    align-self: flex-start;
+}
+
+/* ========== Stats Card ========== */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--citic-red);
+    border-radius: 12px 12px 0 0;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--citic-red);
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: var(--gray-5);
+}
+
+.stat-change {
+    font-size: 0.85rem;
+    color: #52C41A;
+    margin-top: 8px;
+}
+
+.stat-change.negative {
+    color: var(--citic-red);
+}
+
+/* ========== Info Box ========== */
+.info-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    border-left: 4px solid var(--citic-red);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.info-box-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-5);
+    margin-bottom: 10px;
+}
+
+.info-box-content {
+    font-size: 0.95rem;
+    color: var(--gray-5);
+    line-height: 1.7;
+}
+
+/* ========== Highlight Box ========== */
+.highlight-box {
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-radius: 12px;
+    padding: 30px;
+    color: #fff;
+}
+
+.highlight-box .box-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.highlight-box .box-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    opacity: 0.95;
+}
+
+/* ========== Timeline ========== */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding-left: 30px;
+    position: relative;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--gray-3);
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -22px;
+    top: 8px;
+    width: 16px;
+    height: 16px;
+    background: var(--citic-red);
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px var(--citic-red);
+}
+
+.timeline-date {
+    font-size: 0.9rem;
+    color: var(--citic-red);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.timeline-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-5);
+    margin-bottom: 8px;
+}
+
+.timeline-desc {
+    font-size: 0.95rem;
+    color: var(--gray-5);
+    line-height: 1.6;
+}
+
+/* ========== Progress Bar ========== */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--citic-red);
+    width: 0%;
+    z-index: 100;
+}
+
+/* Two Column Slide */
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    text-align: left;
+}
+
+.column h3 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    color: #c41230;
+    font-weight: 600;
+}
+
+.column p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.column li {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 10px;
+    opacity: 0;
+}
+
+.column li.visible {
+    opacity: 1;
+}
+
+.column li:before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #c41230;
+    font-size: 0.6rem;
+    top: 0.4em;
+}
+
+/* Image Slide */
+.image-container {
+    width: 100%;
+    max-width: 800px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Quote Slide */
+.slide.quote-slide {
+    background: #f0f0f0;
+}
+
+.slide.quote-slide .slide-content {
+    max-width: 900px;
+}
+
+.quote {
+    font-size: 2rem;
+    font-style: normal;
+    color: #333;
+    line-height: 1.8;
+    position: relative;
+    padding: 0 60px;
+}
+
+.quote:before,
+.quote:after {
+    content: "\"";
+    font-size: 4rem;
+    color: #c41230;
+    position: absolute;
+    opacity: 0.4;
+}
+
+.quote:before {
+    top: -20px;
+    left: 0;
+}
+
+.quote:after {
+    bottom: -40px;
+    right: 0;
+}
+
+.quote-author {
+    font-size: 1.2rem;
+    color: #666;
+    margin-top: 30px;
+    text-align: right;
+}
+
+/* Code Slide */
+.code-container {
+    background: #0d1117;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: left;
+    width: 100%;
+    max-width: 900px;
+    overflow-x: auto;
+}
+
+.code-container pre {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.code-container code {
+    color: #e0e0e0;
+}
+
+/* Slide Counter */
+.slide-counter {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    font-size: 1rem;
+    color: #666;
+    z-index: 100;
+}
+
+/* Keyboard Hint */
+.keyboard-hint {
+    position: fixed;
+    bottom: 30px;
+    left: 40px;
+    font-size: 0.85rem;
+    color: #999;
+    z-index: 100;
+}
+
+.keyboard-hint kbd {
+    background: rgba(0,0,0,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 0 2px;
+    color: #666;
+}
+
+/* Content wrapper */
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== Template 1: 统计数据卡片 ========== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--citic-red);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon svg {
+    width: 30px;
+    height: 30px;
+    fill: #fff;
+}
+
+.stat-number {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--citic-red);
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--gray-5);
+}
+
+.stat-change {
+    font-size: 0.9rem;
+    color: #52C41A;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.stat-change.negative {
+    color: var(--citic-red);
+}
+
+/* ========== Template 2: 流程步骤 ========== */
+.process-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 0;
+}
+
+.process-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.process-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 40px;
+    right: -50%;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--citic-red), var(--gray-3));
+    z-index: 0;
+}
+
+.step-number {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 8px 20px rgba(210, 10, 16, 0.3);
+}
+
+.step-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gray-5);
+    margin-bottom: 10px;
+}
+
+.step-desc {
+    font-size: 0.95rem;
+    color: var(--gray-4);
+    line-height: 1.6;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+/* ========== Template 3: 对比列表 ========== */
+.comparison-container {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.comparison-side {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.comparison-side.left {
+    border-top: 4px solid var(--citic-red);
+}
+
+.comparison-side.right {
+    border-top: 4px solid #52C41A;
+}
+
+.comparison-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comparison-side.left .comparison-title {
+    color: var(--citic-red);
+}
+
+.comparison-side.right .comparison-title {
+    color: #52C41A;
+}
+
+.comparison-list {
+    list-style: none;
+}
+
+.comparison-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-1);
+    font-size: 1rem;
+    color: var(--gray-5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comparison-list li:last-child {
+    border-bottom: none;
+}
+
+.comparison-list li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.comparison-side.left .comparison-list li::before {
+    background: var(--citic-red);
+}
+
+.comparison-side.right .comparison-list li::before {
+    background: #52C41A;
+}
+
+.comparison-vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-3);
+}
+
+/* ========== Template 4: 时间线 ========== */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 40px;
+    position: relative;
+}
+
+.timeline-container::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: linear-gradient(180deg, var(--citic-red), var(--gray-3));
+}
+
+.timeline-item-card {
+    position: relative;
+    padding: 20px 0 20px 40px;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.timeline-item-card::before {
+    content: "";
+    position: absolute;
+    left: -25px;
+    top: 28px;
+    width: 20px;
+    height: 20px;
+    background: var(--citic-red);
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 3px var(--citic-red);
+}
+
+.timeline-date-box {
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    min-width: 140px;
+    text-align: center;
+}
+
+.timeline-content-card {
+    flex: 1;
+    background: #fff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.timeline-title-card {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--gray-5);
+    margin-bottom: 8px;
+}
+
+.timeline-desc-card {
+    font-size: 0.95rem;
+    color: var(--gray-4);
+    line-height: 1.6;
+}
+
+/* ========== Template 5: 图文混排 ========== */
+.media-text-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.media-image {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.media-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.media-content h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gray-5);
+    margin-bottom: 20px;
+}
+
+.media-content p {
+    font-size: 1.1rem;
+    color: var(--gray-5);
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.feature-list {
+    list-style: none;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 1rem;
+    color: var(--gray-5);
+}
+
+.feature-list li svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--citic-red);
+    flex-shrink: 0;
+}
+
+/* ========== Template 6: 标签云 ========== */
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.tag-item {
+    background: #fff;
+    border: 2px solid var(--gray-2);
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    color: var(--gray-5);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.tag-item:hover {
+    border-color: var(--citic-red);
+    color: var(--citic-red);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(210, 10, 16, 0.15);
+}
+
+.tag-item.primary {
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-color: transparent;
+    color: #fff;
+}
+
+.tag-item.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(210, 10, 16, 0.3);
+}
+
+/* ========== Template 7: 人物介绍 ========== */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.team-member {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.member-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gray-2) 0%, var(--gray-1) 100%);
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--gray-4);
+}
+
+.member-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gray-5);
+    margin-bottom: 5px;
+}
+
+.member-role {
+    font-size: 0.95rem;
+    color: var(--citic-red);
+    margin-bottom: 15px;
+}
+
+.member-desc {
+    font-size: 0.9rem;
+    color: var(--gray-4);
+    line-height: 1.6;
+}
+
+/* ========== Template 8: 引用/强调 ========== */
+.quote-highlight {
+    background: linear-gradient(135deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-radius: 16px;
+    padding: 50px 60px;
+    color: #fff;
+    position: relative;
+}
+
+.quote-highlight::before {
+    content: '\201C';
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    font-size: 8rem;
+    opacity: 0.2;
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.quote-text {
+    font-size: 1.8rem;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.quote-author {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.quote-author::before {
+    content: "";
+    width: 50px;
+    height: 2px;
+    background: rgba(255,255,255,0.5);
+}
+
+/* ========== Template 9: 进度指示器 ========== */
+.progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.progress-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.progress-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-5);
+}
+
+.progress-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--citic-red);
+}
+
+.progress-bar-bg {
+    height: 12px;
+    background: var(--gray-1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--citic-red) 0%, #E85A5A 100%);
+    border-radius: 6px;
+    transition: width 1s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .slide {
+        padding: 40px 30px;
+    }
+
+    .slide.title-slide .slide-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .slide.content-slide .slide-content h2 {
+        font-size: 2rem;
+    }
+
+    .slide.content-slide .slide-content li {
+        font-size: 1.2rem;
+    }
+
+    .two-columns {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .keyboard-hint {
+        display: none;
+    }
+}

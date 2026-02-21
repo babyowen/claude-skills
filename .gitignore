@@ -26,3 +26,9 @@ __pycache__/
 
 # Third-party skills (manually managed)
 ui-ux-pro-max/
+
+# Node.js
+node_modules/
+
+# Build output
+dist/
