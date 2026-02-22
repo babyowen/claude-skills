@@ -6,7 +6,7 @@
 
 | Skill | 描述 |
 |-------|------|
-| [deepthink](./deepthink) | 深度思考辅助工具，采用多 agent 协作模式帮助用户澄清目标、收集背景、设计方案、批判审视 |
+| [think-think](./think-think) | 深度思考辅助工具，采用多 agent 协作模式帮助用户澄清目标、收集背景、设计方案、批判审视 |
 | [openclaw-skill-check](./openclaw-skill-check) | OpenClaw skill 验证器，检查 SKILL.md 格式和 metadata.openclaw 结构 |
 | [ppt-to-web](./ppt-to-web) | PPT 转 Web 演示工具，使用 GSAP 动画库将 PPT 大纲转换为精美的 HTML 演示文稿 |
 | [skill-creator](./skill-creator) | Skill 创建向导，帮助创建新的 skill |
@@ -31,7 +31,7 @@ git clone https://github.com/babyowen/claude-skills.git .
 
 ```bash
 # 复制单个 skill 到你的 skills 目录
-cp -r claude-skills/deepthink ~/.claude/skills/
+cp -r claude-skills/think-think ~/.claude/skills/
 ```
 
 ### UI/UX Pro Max（第三方）
@@ -55,13 +55,13 @@ uipro init --ai claude --force  # 重新安装 skill
 安装后，在 Claude Code 中可以通过以下方式使用：
 
 - **自动触发**：根据 skill 的 description 自动匹配
-- **手动调用**：使用 `/skill-name` 命令，如 `/deepthink`
+- **手动调用**：使用 `/skill-name` 命令，如 `/think-think`
 
 ## 目录结构
 
 ```
 claude-skills/
-├── deepthink/              # 深度思考 skill
+├── think-think/            # 深度思考 skill
 │   ├── SKILL.md
 │   └── agents/
 ├── openclaw-skill-check/   # Skill 验证器
