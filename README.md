@@ -8,6 +8,7 @@
 |-------|------|
 | [deepthink](./deepthink) | 深度思考辅助工具，采用多 agent 协作模式帮助用户澄清目标、收集背景、设计方案、批判审视 |
 | [openclaw-skill-check](./openclaw-skill-check) | OpenClaw skill 验证器，检查 SKILL.md 格式和 metadata.openclaw 结构 |
+| [ppt-to-web](./ppt-to-web) | PPT 转 Web 演示工具，使用 GSAP 动画库将 PPT 大纲转换为精美的 HTML 演示文稿 |
 | [skill-creator](./skill-creator) | Skill 创建向导，帮助创建新的 skill |
 
 > **注意**: `ui-ux-pro-max` 是第三方 skill，需要单独安装，参见下方说明。
@@ -67,6 +68,11 @@ claude-skills/
 │   ├── SKILL.md
 │   ├── scripts/
 │   └── references/
+├── ppt-to-web/             # PPT 转 Web 演示
+│   ├── SKILL.md
+│   ├── src/
+│   ├── dist/
+│   └── demos/
 └── skill-creator/          # Skill 创建工具
     ├── SKILL.md
     ├── scripts/
