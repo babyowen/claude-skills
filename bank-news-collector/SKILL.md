@@ -329,18 +329,41 @@ curl -s "https://r.jina.ai/https://目标URL" --max-time 30
 
 ## 脚本说明
 
+### 核心脚本（被执行）
+
 | 脚本 | 用途 | 对应步骤 |
 |------|------|----------|
 | `init_daily_json.py` | 确保当天JSON存在 | 步骤1 |
 | `fetch_all_candidates.py` | 并发抓取所有站点候选 | 步骤2a |
+| `step2b_extract.py` | LLM从raw markdown提取新闻 | 步骤2b |
+| `step2b_run.py` | 步骤2b运行入口 | 步骤2b |
+| `step5_fetch.py` | 逐条读取增量新闻正文 | 步骤5 |
 | `dedup_process.py` | 与process.json去重，保留增量 | 步骤4 |
 | `archive_pipeline.py` | 归档中间文件为日期副本 | 步骤6.5 |
 | `merge_news_json.py` | 合并新闻进JSON，含日期门禁 | 步骤7 |
 | `generate_report.py` | 按模板生成最终报告 | 步骤8 |
+| `send_feishu.py` | 飞书通知发送 | 步骤9 |
+| `send_feishu_notification.py` | 飞书通知备用入口 | 步骤9 |
 | `collect_site_candidates.py` | 统一采集入口（脚本站点） | 步骤2a |
 | `jiemian_finance_extractor.py` | 界面新闻专用提取器 | 步骤2a |
-| `validate_news_json.py` | 校验JSON结构 | 辅助 |
-| `validate_output.py` | 验证输出格式 | 辅助 |
+
+### 辅助脚本（按需手动使用）
+
+| 脚本 | 用途 |
+|------|------|
+| `append_llm_candidates.py` | 追加LLM提取的候选 |
+| `merge_rounds.py` | 合并多轮筛选结果 |
+| `fix_json.py` | JSON结构修复 |
+| `fix_first_round.py` | 第一轮筛选结果修复 |
+| `debug_json.py` | JSON调试工具 |
+| `compute_stats.py` | 统计计算 |
+| `validate_news_json.py` | 校验JSON结构 |
+| `validate_output.py` | 验证输出格式 |
+| `check_lark.py` | 检查飞书CLI配置 |
+| `check_keychain.py` | 检查密钥存储 |
+
+> **注意**：`scripts/` 目录下以 `_` 开头的脚本为开发/调试用的临时脚本，不应在正式流程中引用。
+> `filter_round1.py` 位于项目根目录，不在 `scripts/` 目录中。
 
 ## 中间文件说明
 
