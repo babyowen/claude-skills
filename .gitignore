@@ -25,6 +25,8 @@ __pycache__/
 .env.local
 
 # Third-party skills (manually managed)
+# 飞书官方技能
+lark*/
 ui-ux-pro-max/
 
 # Node.js
@@ -32,3 +34,4 @@ node_modules/
 
 # Build output
 dist/
+test/
