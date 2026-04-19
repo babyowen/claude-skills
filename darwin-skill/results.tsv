@@ -1,0 +1,8 @@
+2026-04-18T09:12	baseline	bank-news-collector	-	72	baseline	-	初始基线评估	dry_run
+2026-04-18T09:15	bcc38dd	bank-news-collector	72	75.3	keep	检查点设计	补充异常处理与回退小节	dry_run
+2026-04-18T09:17	0411518	bank-news-collector	75.3	76.3	keep	边界条件覆盖	补充网络重试和文件恢复	dry_run
+2026-04-18T09:19	c65de9b	bank-news-collector	76.3	77.3	keep	资源整合度	更新脚本表匹配实际目录	dry_run
+2026-04-18T09:22	c65de9b	bank-news-collector	77.3	80.3	keep	实测表现	实测验证后提升	full_test
+2026-04-18T10:50	035f237	bank-news-collector	80.3	81.1	keep	Frontmatter质量	精简description并补充双语触发词	dry_run
+2026-04-18T10:52	c081c8b	bank-news-collector	81.1	82.6	keep	工作流清晰度	扁平化步骤6，抽出日期速查表	dry_run
+2026-04-18T10:54	bab00c4	bank-news-collector	82.6	84.1	keep	整体架构	添加执行模式速查与边界澄清	dry_run

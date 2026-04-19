@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "Bash": [
+      {
+        "command": "python*lixinger/scripts/lixinger.py*",
+        "allow": true
+      },
+      {
+        "command": "export LIXINGER_TOKEN*",
+        "allow": true
+      }
+    ]
+  }
+}

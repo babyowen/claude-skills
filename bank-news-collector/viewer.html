@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>银行新闻采集 - 流水线查看器</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card: #fff;
+    --border: #e2e6ea;
+    --text: #1a1a2e;
+    --muted: #6c757d;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warn: #d97706;
+    --warn-light: #fef3c7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f, #2563eb);
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header-controls { display: flex; align-items: center; gap: 12px; }
+  .header label { font-size: 14px; opacity: 0.9; }
+  .date-input {
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .date-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+  /* Main */
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+
+  /* Pipeline funnel */
+  .funnel {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 28px;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .funnel-step {
+    flex: 1;
+    text-align: center;
+    padding: 18px 8px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .funnel-step:hover { filter: brightness(0.97); }
+  .funnel-step:not(:last-child)::after {
+    content: '▶';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--muted);
+    z-index: 1;
+  }
+  .funnel-step .step-num {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .funnel-step .step-count {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .funnel-step .step-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .funnel-step.step-candidates .step-count { color: var(--accent); }
+  .funnel-step.step-first .step-count { color: var(--warn); }
+  .funnel-step.step-incremental .step-count { color: var(--warn); }
+  .funnel-step.step-second .step-count { color: var(--success); }
+  .funnel-step.step-final .step-count { color: var(--success); }
+
+  /* Site table */
+  .site-table-wrap {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .site-table-wrap h2 {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  .site-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .site-table th {
+    text-align: left;
+    padding: 10px 20px;
+    background: #fafbfc;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-table td {
+    padding: 10px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .site-table tr:last-child td { border-bottom: none; }
+  .site-table tr:hover { background: #f8fafc; }
+  .num-badge {
+    display: inline-block;
+    min-width: 28px;
+    text-align: center;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .num-zero { background: #f3f4f6; color: #9ca3af; }
+  .num-positive { background: var(--accent-light); color: var(--accent); }
+  .num-final { background: var(--success-light); color: var(--success); }
+
+  /* Section cards */
+  .section-card {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { background: #f8fafc; }
+  .section-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header .badge {
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .section-header .toggle {
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+  .section-header.expanded .toggle { transform: rotate(90deg); }
+  .section-body { display: none; border-top: 1px solid var(--border); }
+  .section-body.show { display: block; }
+
+  /* News list */
+  .news-list { list-style: none; }
+  .news-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-item:hover { background: #f8fafc; }
+  .news-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .news-title a {
+    color: var(--text);
+    text-decoration: none;
+    flex: 1;
+  }
+  .news-title a:hover { color: var(--accent); text-decoration: underline; }
+  .news-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .news-meta span { display: flex; align-items: center; gap: 4px; }
+  .source-tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 4px;
+    background: #f0f4ff;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* Summary expandable */
+  .summary-toggle {
+    font-size: 12px;
+    color: var(--accent);
+    cursor: pointer;
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .summary-toggle:hover { text-decoration: underline; }
+  .summary-content {
+    display: none;
+    margin-top: 8px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #374151;
+    white-space: pre-wrap;
+  }
+  .summary-content.show { display: block; }
+
+  /* Why relevant */
+  .why-relevant {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--warn);
+    font-style: italic;
+  }
+
+  /* Process URLs */
+  .process-list {
+    padding: 14px 20px;
+    font-size: 12px;
+    color: var(--muted);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .process-list p { margin-bottom: 4px; word-break: break-all; }
+
+  /* Empty state */
+  .empty-state {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* Loading */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--muted);
+    gap: 8px;
+  }
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .funnel { flex-wrap: wrap; }
+    .funnel-step { min-width: 33%; }
+    .funnel-step:not(:last-child)::after { display: none; }
+    .container { padding: 16px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>银行新闻采集 - 流水线查看器</h1>
+  <div class="header-controls">
+    <label>选择日期</label>
+    <input type="date" id="datePicker" class="date-input">
+  </div>
+</div>
+
+<div class="container">
+  <!-- Pipeline Funnel -->
+  <div class="funnel" id="funnel">
+    <div class="funnel-step step-candidates" onclick="scrollToSection('sec-candidates')">
+      <div class="step-num">步骤2</div>
+      <div class="step-count" id="cnt-candidates">-</div>
+      <div class="step-label">候选新闻</div>
+    </div>
+    <div class="funnel-step step-first" onclick="scrollToSection('sec-first')">
+      <div class="step-num">步骤3</div>
+      <div class="step-count" id="cnt-first">-</div>
+      <div class="step-label">初筛入选</div>
+    </div>
+    <div class="funnel-step step-incremental" onclick="scrollToSection('sec-incremental')">
+      <div class="step-num">步骤4</div>
+      <div class="step-count" id="cnt-incremental">-</div>
+      <div class="step-label">增量候选</div>
+    </div>
+    <div class="funnel-step step-second" onclick="scrollToSection('sec-second')">
+      <div class="step-num">步骤6</div>
+      <div class="step-count" id="cnt-second">-</div>
+      <div class="step-label">二轮入选</div>
+    </div>
+    <div class="funnel-step step-final" onclick="scrollToSection('sec-final')">
+      <div class="step-num">步骤7</div>
+      <div class="step-count" id="cnt-final">-</div>
+      <div class="step-label">最终入库</div>
+    </div>
+  </div>
+
+  <!-- Site breakdown table -->
+  <div class="site-table-wrap">
+    <h2>按站点统计</h2>
+    <table class="site-table" id="siteTable">
+      <thead>
+        <tr>
+          <th>站点</th>
+          <th>候选</th>
+          <th>初筛入选</th>
+          <th>增量</th>
+          <th>二轮入选</th>
+          <th>最终入库</th>
+        </tr>
+      </thead>
+      <tbody id="siteTableBody">
+        <tr><td colspan="6" class="empty-state">请选择日期</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section: Candidates -->
+  <div class="section-card" id="sec-candidates">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3><span class="toggle">▶</span> 步骤2：候选新闻 <span class="badge" id="badge-candidates"></span></h3>
+    </div>
+    <div class="section-body" id="body-candidates">
+      <div class="empty-state">加载中...</div>
+    </div>
+  </div>
+
+  <!-- Section: First Round -->
+  <div class="section-card" id="sec-first">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3><span class="toggle">▶</span> 步骤3：第一轮筛选（宽进） <span class="badge" id="badge-first"></span></h3>
+    </div>
+    <div class="section-body" id="body-first">
+      <div class="empty-state">加载中...</div>
+    </div>
+  </div>
+
+  <!-- Section: Incremental -->
+  <div class="section-card" id="sec-incremental">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3><span class="toggle">▶</span> 步骤4：增量候选（去重后） <span class="badge" id="badge-incremental"></span></h3>
+    </div>
+    <div class="section-body" id="body-incremental">
+      <div class="empty-state">加载中...</div>
+    </div>
+  </div>
+
+  <!-- Section: Second Round -->
+  <div class="section-card" id="sec-second">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3><span class="toggle">▶</span> 步骤6：第二轮筛选（严出） <span class="badge" id="badge-second"></span></h3>
+    </div>
+    <div class="section-body" id="body-second">
+      <div class="empty-state">加载中...</div>
+    </div>
+  </div>
+
+  <!-- Section: Final News -->
+  <div class="section-card" id="sec-final">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3><span class="toggle">▶</span> 步骤7：最终入库新闻 <span class="badge" id="badge-final"></span></h3>
+    </div>
+    <div class="section-body" id="body-final">
+      <div class="empty-state">加载中...</div>
+    </div>
+  </div>
+
+  <!-- Section: Process Log -->
+  <div class="section-card" id="sec-process">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3><span class="toggle">▶</span> 已处理URL记录 <span class="badge" id="badge-process"></span></h3>
+    </div>
+    <div class="section-body" id="body-process">
+      <div class="empty-state">加载中...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SITE_ORDER = [
+  '财联社-首页', '财联社-深度-1032', '界面新闻-金融频道',
+  '东方财富-首页', '东方财富-银行频道', '第一财经-金融频道'
+];
+const BASE = 'data/';
+
+// Init date picker
+const datePicker = document.getElementById('datePicker');
+const today = new Date().toISOString().split('T')[0];
+datePicker.value = today;
+datePicker.addEventListener('change', () => loadAll(datePicker.value));
+loadAll(today);
+
+async function fetchJSON(path) {
+  try {
+    const r = await fetch(BASE + path);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+async function loadAll(date) {
+  const ids = ['candidates', 'first', 'incremental', 'second', 'final'];
+  ids.forEach(id => {
+    document.getElementById(`cnt-${id}`).textContent = '…';
+    document.getElementById(`badge-${id}`).textContent = '';
+  });
+  document.getElementById(`badge-process`).textContent = '';
+  document.getElementById('siteTableBody').innerHTML =
+    '<tr><td colspan="6"><div class="loading"><div class="spinner"></div>加载中...</div></td></tr>';
+
+  // Fetch all files in parallel - prefer date-archived files, fallback to global
+  const [candidates, firstRound, incremental, secondRound, finalNews, processUrls, newUrls] = await Promise.all([
+    fetchJSON(`${date}-candidates.json`).then(d => d || fetchJSON('candidates_all.json')),
+    fetchJSON(`${date}-first_round.json`).then(d => d || fetchJSON('first_round_filtered.json')),
+    fetchJSON(`${date}-incremental.json`).then(d => d || fetchJSON('incremental_candidates.json')),
+    fetchJSON(`${date}-second_round.json`).then(d => d || fetchJSON('second_round_filtered.json')),
+    fetchJSON(`${date}.json`),
+    fetchJSON(`${date}-process.json`),
+    fetchJSON(`${date}-new-urls.json`)
+  ]);
+
+  // Normalize data - handle both {items:[...]} wrapped and plain array formats
+  const unwrap = d => d?.items || d || [];
+  const allItems = unwrap(candidates);
+  const firstItems = unwrap(firstRound);
+  const incItems = unwrap(incremental);
+  const secondItems = unwrap(secondRound);
+  const finalItems = unwrap(finalNews);
+  const processItems = unwrap(processUrls);
+  const newUrlList = newUrls || [];
+
+  // Counts
+  document.getElementById('cnt-candidates').textContent = allItems.length;
+  document.getElementById('cnt-first').textContent = firstItems.length;
+  document.getElementById('cnt-incremental').textContent = incItems.length;
+  document.getElementById('cnt-second').textContent = secondItems.length;
+  document.getElementById('cnt-final').textContent = finalItems.length;
+
+  // Badges
+  document.getElementById('badge-candidates').textContent = `${allItems.length} 条`;
+  document.getElementById('badge-first').textContent = `${firstItems.length} 条`;
+  document.getElementById('badge-incremental').textContent = `${incItems.length} 条`;
+  document.getElementById('badge-second').textContent = `${secondItems.length} 条`;
+  document.getElementById('badge-final').textContent = `${finalItems.length} 条`;
+  document.getElementById('badge-process').textContent = `${processItems.length} 条`;
+
+  // Site table
+  renderSiteTable(allItems, firstItems, incItems, secondItems, finalItems, newUrlList);
+
+  // Render sections
+  renderItemList('body-candidates', allItems, false);
+  renderItemList('body-first', firstItems, false);
+  renderItemList('body-incremental', incItems, false);
+  renderItemList('body-second', secondItems, true);
+  renderFinalNews('body-final', finalItems, newUrlList);
+  renderProcessList('body-process', processItems);
+}
+
+function renderSiteTable(all, first, inc, second, final_, newUrls) {
+  const newUrlSet = new Set(newUrls);
+  const countBy = (items, key) => {
+    const m = {};
+    items.forEach(item => {
+      const src = item.listed_from || item.source || '';
+      const site = SITE_ORDER.find(s => src === s || src.startsWith(s.split('-')[0])) || src;
+      m[site] = (m[site] || 0) + 1;
+    });
+    return m;
+  };
+  const cAll = countBy(all);
+  const cFirst = countBy(first);
+  const cInc = countBy(inc);
+  const cSecond = countBy(second);
+  const cFinal = {};
+  final_.forEach(item => {
+    if (newUrlSet.has(item.url)) {
+      const src = item.listed_from || item.source || '';
+      const site = SITE_ORDER.find(s => src === s || src.startsWith(s.split('-')[0])) || src;
+      cFinal[site] = (cFinal[site] || 0) + 1;
+    }
+  });
+
+  let html = '';
+  SITE_ORDER.forEach(site => {
+    const a = cAll[site] || 0;
+    const f = cFirst[site] || 0;
+    const i = cInc[site] || 0;
+    const s = cSecond[site] || 0;
+    const d = cFinal[site] || 0;
+    html += `<tr>
+      <td>${site}</td>
+      <td>${numBadge(a)}</td>
+      <td>${numBadge(f)}</td>
+      <td>${numBadge(i)}</td>
+      <td>${numBadge(s)}</td>
+      <td>${numBadge(d, true)}</td>
+    </tr>`;
+  });
+
+  // Totals
+  const totalAll = all.length;
+  const totalFirst = first.length;
+  const totalInc = inc.length;
+  const totalSecond = second.length;
+  const totalFinal = final_.filter(x => newUrlSet.has(x.url)).length;
+  html += `<tr style="font-weight:600;background:#fafbfc;">
+    <td>合计</td>
+    <td>${numBadge(totalAll)}</td>
+    <td>${numBadge(totalFirst)}</td>
+    <td>${numBadge(totalInc)}</td>
+    <td>${numBadge(totalSecond)}</td>
+    <td>${numBadge(totalFinal, true)}</td>
+  </tr>`;
+
+  document.getElementById('siteTableBody').innerHTML = html;
+}
+
+function numBadge(n, isFinal) {
+  if (n === 0) return `<span class="num-badge num-zero">${n}</span>`;
+  if (isFinal) return `<span class="num-badge num-final">${n}</span>`;
+  return `<span class="num-badge num-positive">${n}</span>`;
+}
+
+function renderItemList(containerId, items, hasSummary) {
+  const el = document.getElementById(containerId);
+  if (!items || items.length === 0) {
+    el.innerHTML = '<div class="empty-state">（无数据）</div>';
+    return;
+  }
+  let html = '<ul class="news-list">';
+  items.forEach((item, idx) => {
+    const source = item.listed_from || item.source || '';
+    html += `<li class="news-item">
+      <div class="news-title">
+        <span style="color:var(--muted);font-size:12px;min-width:24px">${idx + 1}.</span>
+        <a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>
+      </div>
+      <div class="news-meta">
+        ${source ? `<span class="source-tag">${esc(source)}</span>` : ''}
+        ${item.source && item.source !== source ? `<span>${esc(item.source)}</span>` : ''}
+      </div>
+      ${hasSummary && item.summary ? renderSummary(item.summary) : ''}
+      ${hasSummary && item.why_relevant ? `<div class="why-relevant">💡 ${esc(item.why_relevant)}</div>` : ''}
+    </li>`;
+  });
+  html += '</ul>';
+  el.innerHTML = html;
+}
+
+function renderFinalNews(containerId, items, newUrls) {
+  const el = document.getElementById(containerId);
+  if (!items || items.length === 0) {
+    el.innerHTML = '<div class="empty-state">（当天无入库新闻）</div>';
+    return;
+  }
+  const newUrlSet = new Set(newUrls);
+  let html = '<ul class="news-list">';
+  items.forEach((item, idx) => {
+    const isNew = newUrlSet.has(item.url);
+    const newTag = isNew ? '<span style="color:var(--success);font-size:11px;font-weight:600">NEW</span>' : '';
+    html += `<li class="news-item">
+      <div class="news-title">
+        <span style="color:var(--muted);font-size:12px;min-width:24px">${idx + 1}.</span>
+        ${newTag}
+        <a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>
+      </div>
+      <div class="news-meta">
+        ${item.source ? `<span class="source-tag">${esc(item.source)}</span>` : ''}
+        ${item.published_at ? `<span>📅 ${formatDate(item.published_at)}</span>` : ''}
+        ${item.collected_at ? `<span>📥 ${formatDate(item.collected_at)}</span>` : ''}
+      </div>
+      ${item.why_relevant ? `<div class="why-relevant">💡 ${esc(item.why_relevant)}</div>` : ''}
+      ${item.summary ? renderSummary(item.summary) : ''}
+    </li>`;
+  });
+  html += '</ul>';
+  el.innerHTML = html;
+}
+
+function renderSummary(summary) {
+  const id = 'sum_' + Math.random().toString(36).slice(2, 8);
+  return `
+    <span class="summary-toggle" onclick="toggleSummary('${id}', this)">
+      ▶ 查看总结
+    </span>
+    <div class="summary-content" id="${id}">${esc(summary)}</div>`;
+}
+
+function toggleSummary(id, btn) {
+  const el = document.getElementById(id);
+  const show = el.classList.toggle('show');
+  btn.textContent = show ? '▼ 收起总结' : '▶ 查看总结';
+}
+
+function renderProcessList(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!items || items.length === 0) {
+    el.innerHTML = '<div class="empty-state">（无已处理URL）</div>';
+    return;
+  }
+  let html = '<div class="process-list">';
+  items.forEach((item, idx) => {
+    const url = typeof item === 'string' ? item : item.url || '';
+    html += `<p>${idx + 1}. ${esc(url)}</p>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const show = body.classList.toggle('show');
+  header.classList.toggle('expanded', show);
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Auto expand
+  const header = el.querySelector('.section-header');
+  const body = el.querySelector('.section-body');
+  if (header && body && !body.classList.contains('show')) {
+    body.classList.add('show');
+    header.classList.add('expanded');
+  }
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleString('zh-CN', {
+      month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit'
+    });
+  } catch { return iso; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "slide-craft",
+  "version": "2.0.0",
+  "description": "将 Markdown/文本大纲转换为 HTML 和 PowerPoint 演示文稿",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:all": "vite build && node scripts/export-pptx.js",
+    "build:pptx": "node scripts/export-pptx.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "vite-plugin-singlefile": "^2.0.2"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "pptxgenjs": "^4.0.1",
+    "marked": "^12.0.0",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.2"
+  }
+}

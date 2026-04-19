@@ -25,9 +25,12 @@ __pycache__/
 .env.local
 
 # Third-party skills (manually managed)
-# 飞书官方技能
-lark*/
+# 飞书官方技能（符号链接 + 目录）
+lark*
 ui-ux-pro-max/
+
+# External git repositories
+web-access/
 
 # Node.js
 node_modules/
@@ -35,3 +38,8 @@ node_modules/
 # Build output
 dist/
 test/
+
+# Generated data (bank-news-collector)
+bank-news-collector/data/
+bank-news-collector/reports/
+bank-news-collector/evals/

@@ -1,0 +1,41 @@
+{
+  "id": "example-site",
+  "site_name": "example-finance-site",
+  "url": "https://example.com/news",
+  "allowed_domains": ["example.com"],
+  "use_agent_browser": true,
+  "expand_within_site": false,
+  "pagination": false,
+  "page_hint": "只读取这个指定页面当前可见的标题和链接，不翻页，不延展到站内其他页面。优先识别主新闻区。",
+  "list_fetch_strategy": "agent_browser",
+  "article_fetch_strategy": "web_fetch_then_agent_browser",
+  "wait_strategy": {
+    "initial_wait_ms": 5000,
+    "allow_retry": true,
+    "retry_wait_ms": 8000
+  },
+  "candidate_zones": [
+    "首页主新闻区",
+    "频道正文区",
+    "深度文章列表"
+  ],
+  "noise_filters": [
+    "顶部导航",
+    "广告位",
+    "工具区",
+    "页脚",
+    "登录组件",
+    "验证码",
+    "弹层"
+  ],
+  "max_candidate_articles": 30,
+  "relevance_focus": [
+    "监管政策对银行经营的影响",
+    "资产负债管理",
+    "净息差与负债成本",
+    "风险管理与不良资产",
+    "数字化转型与金融科技"
+  ],
+  "output_dir": "data",
+  "notes": "新增网站时，先分析页面结构，再补 page_hint / candidate_zones / noise_filters / wait_strategy。"
+}

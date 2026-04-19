@@ -1,0 +1,212 @@
+[
+  {
+    "id": "cls-home",
+    "site_name": "财联社-首页",
+    "url": "https://www.cls.cn/",
+    "allowed_domains": ["www.cls.cn", "cls.cn"],
+    "use_agent_browser": false,
+    "expand_within_site": false,
+    "pagination": false,
+    "page_hint": "通过专用脚本采集。先调快讯滚动 API 获取首页快讯流，再补充调用深度 1032 API 获取深度文章。脚本自动处理 cookie 和 UA 绕过 418 反爬。不要用 agent-browser 或 web_fetch 直接访问首页。",
+    "list_fetch_strategy": "cls_home_api",
+    "article_fetch_strategy": "web_fetch_then_agent_browser",
+    "collector_entry": "scripts/collect_site_candidates.py --site-id cls-home",
+    "wait_strategy": {
+      "initial_wait_ms": 3000,
+      "allow_retry": true,
+      "retry_wait_ms": 5000
+    },
+    "candidate_zones": [
+      "首页快讯流(roll_list API)",
+      "深度 1032 文章(补充)"
+    ],
+    "noise_filters": [
+      "顶部导航",
+      "活动预告",
+      "功能入口",
+      "页脚链接",
+      "非新闻模块",
+      "登录组件",
+      "验证码",
+      "弹层",
+      "纯行情快讯(无标题)"
+    ],
+    "api_notes": "脚本通过 requests.Session 先访问首页获取 cookie，再调 API。快讯流有 JSON 解析风险（非标准 JSON），已做异常捕获。深度 1032 API 与 cls-depth-1032 共用签名池。"
+  },
+  {
+    "id": "cls-depth-1032",
+    "site_name": "财联社-深度-1032",
+    "url": "https://www.cls.cn/depth?id=1032",
+    "allowed_domains": ["www.cls.cn", "cls.cn"],
+    "use_agent_browser": true,
+    "expand_within_site": false,
+    "pagination": false,
+    "page_hint": "使用专用 API 获取标题列表，脚本已内置多个 sign 参数尝试。从 `top_article` 与 `depth_list` 提取 `id` 和 `title`，正文链接按 `https://www.cls.cn/detail/{id}` 拼接。如果所有 sign 都失效，会记录错误日志到 `logs/errors-YYYYMM.log`。不要把外围导航、推荐卡片、底部链接当成新闻源。",
+    "list_fetch_strategy": "cls_api_with_retry",
+    "article_fetch_strategy": "web_fetch_then_agent_browser",
+    "collector_entry": "scripts/collect_site_candidates.py --site-id cls-depth-1032",
+    "wait_strategy": {
+      "initial_wait_ms": 8000,
+      "allow_retry": true,
+      "retry_wait_ms": 12000
+    },
+    "candidate_zones": [
+      "深度文章列表",
+      "正文区文章卡片",
+      "金融/银行经营相关深度标题"
+    ],
+    "noise_filters": [
+      "外围导航",
+      "推荐卡片",
+      "底部链接",
+      "非正文型入口",
+      "登录组件",
+      "验证码",
+      "弹层",
+      "空链接",
+      "无文本链接",
+      "页脚链接"
+    ],
+    "api_notes": "API 签名可能有时效性，脚本已支持多 sign 尝试和错误日志。如果持续失败，需要从网页源码提取最新 sign 参数并添加到脚本的 CLS_SIGNS 列表中。"
+  },
+  {
+    "id": "eastmoney-home",
+    "site_name": "东方财富-首页",
+    "url": "https://www.eastmoney.com/",
+    "allowed_domains": ["www.eastmoney.com", "eastmoney.com"],
+    "use_agent_browser": true,
+    "expand_within_site": false,
+    "pagination": false,
+    "page_hint": "只访问首页。优先关注首页正文新闻区与财经资讯流；不要把财富号、股吧、工具区、广告位、行情榜单、频道入口当成新闻候选。",
+    "list_fetch_strategy": "agent_browser",
+    "article_fetch_strategy": "web_fetch_then_agent_browser",
+    "wait_strategy": {
+      "initial_wait_ms": 5000,
+      "allow_retry": true,
+      "retry_wait_ms": 8000
+    },
+    "candidate_zones": [
+      "首页正文新闻区",
+      "财经资讯流",
+      "银行/理财/债券相关频道块"
+    ],
+    "noise_filters": [
+      "财富号",
+      "股吧",
+      "个人号",
+      "行情工具",
+      "广告位",
+      "榜单",
+      "频道入口",
+      "非新闻聚合"
+    ]
+  },
+  {
+    "id": "eastmoney-bank",
+    "site_name": "东方财富-银行频道",
+    "url": "https://bank.eastmoney.com/",
+    "allowed_domains": ["bank.eastmoney.com", "eastmoney.com", "finance.eastmoney.com"],
+    "use_agent_browser": true,
+    "expand_within_site": false,
+    "pagination": false,
+    "page_hint": "只访问银行频道页本身。列表页必须优先使用 agent-browser。优先关注“银行头条”“银行导读”等新闻区，只从这些区块提取完整新闻标题与对应链接；不要提取单个词、拆分词、标签词、表格链接、工具链接。忽略利率表、理财工具、计算器、页脚链接、功能导航、登录组件、验证码和弹层。",
+    "list_fetch_strategy": "agent_browser",
+    "article_fetch_strategy": "web_fetch_then_agent_browser",
+    "wait_strategy": {
+      "initial_wait_ms": 5000,
+      "allow_retry": true,
+      "retry_wait_ms": 8000
+    },
+    "candidate_zones": [
+      "银行头条",
+      "银行导读",
+      "与银行经营直接相关的新闻标题列表"
+    ],
+    "noise_filters": [
+      "利率表",
+      "理财工具",
+      "计算器",
+      "页脚链接",
+      "功能导航",
+      "登录组件",
+      "验证码",
+      "弹层",
+      "财富号",
+      "基金/理财推广模块"
+    ]
+  },
+  {
+    "id": "yicai-finance",
+    "site_name": "第一财经-金融频道",
+    "url": "https://www.yicai.com/news/jinrong/",
+    "allowed_domains": ["www.yicai.com", "yicai.com"],
+    "use_agent_browser": true,
+    "expand_within_site": false,
+    "pagination": false,
+    "page_hint": "只访问第一财经金融频道本页。优先提取金融频道正文新闻列表中的完整标题与对应文章入口，忽略新闻排行、视频排行、图集排行、大直播排行、页脚与导航。",
+    "list_fetch_strategy": "web_fetch_or_agent_browser",
+    "article_fetch_strategy": "web_fetch_then_agent_browser",
+    "wait_strategy": {
+      "initial_wait_ms": 8000,
+      "allow_retry": true,
+      "retry_wait_ms": 12000
+    },
+    "candidate_zones": [
+      "金融频道正文新闻列表",
+      "完整新闻标题链接"
+    ],
+    "noise_filters": [
+      "新闻排行",
+      "视频排行",
+      "图集排行",
+      "大直播排行",
+      "导航链接",
+      "页脚链接",
+      "广告位",
+      "加载更多按钮"
+    ]
+  },
+  {
+    "id": "jiemian-finance",
+    "site_name": "界面新闻-金融频道",
+    "url": "https://www.jiemian.com/lists/9.html",
+    "allowed_domains": ["www.jiemian.com", "jiemian.com", "res.jiemian.com", "img.jiemian.com"],
+    "use_agent_browser": false,
+    "expand_within_site": false,
+    "pagination": false,
+    "page_hint": "只访问界面新闻金融频道本页。优先从主列表区 `#load-list` 下的 `li.card-list` 提取新闻；标题以 `h3.card-list__title` 为准，链接优先取包裹该标题的文章链接。不要把顶部导航、频道切换、轮播摘要、广告位、页脚、登录组件、专题入口、单个词标签、摘要段落链接当成新闻标题。若静态 HTML 抽取异常，再回退到 agent-browser，只抓主列表区可见文章卡片。",
+    "list_fetch_strategy": "static_html_main_list_then_agent_browser",
+    "article_fetch_strategy": "web_fetch_then_agent_browser",
+    "collector_entry": "scripts/collect_site_candidates.py --site-id jiemian-finance",
+    "wait_strategy": {
+      "initial_wait_ms": 4000,
+      "allow_retry": true,
+      "retry_wait_ms": 8000
+    },
+    "candidate_zones": [
+      "金融频道主列表区(#load-list)",
+      "文章卡片标题(h3.card-list__title)",
+      "与银行经营相关的深度/监管/银行机构报道"
+    ],
+    "noise_filters": [
+      "顶部导航",
+      "频道切换",
+      "轮播图摘要",
+      "广告位",
+      "专题入口",
+      "摘要段落链接",
+      "单个词标签",
+      "页脚链接",
+      "登录组件",
+      "验证码",
+      "弹层"
+    ],
+    "title_extraction_rules": [
+      "优先保留 h3.card-list__title 的完整文本，不使用摘要 p 文本代替标题",
+      "链接必须匹配 /article/\\d+\\.html，且域名属于 jiemian.com",
+      "同一 article URL 若出现图片、标题、摘要三种重复链接，只保留标题那一条",
+      "过滤长度过短的快讯式标题（如纯行情数字、单句报价）",
+      "正文优先 web_fetch；如抽取内容明显过短、只有摘要或命中反爬/空白，再回退 agent-browser"
+    ]
+  }
+]
