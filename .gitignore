@@ -32,6 +32,11 @@ ui-ux-pro-max/
 # External git repositories
 web-access/
 
+# Local IDE / tool configs
+.agents/
+.trae/
+.claude/
+
 # Node.js
 node_modules/
 
