@@ -574,6 +574,24 @@ npm run build:all
 - 适当压缩以减小文件大小
 - 使用专业、商务的图片
 
+## 失败模式与处置
+
+| 触发条件 | 脚本实际行为 | 处置 |
+|---|---|---|
+| 输入文件缺失（export-pptx.js） | `❌ 找不到输入文件` exit(1) | 检查路径，默认读 `presentation.md` |
+| 内容无法解析（parseInput 返回空） | `throw 无法解析输入内容` exit(1) | 确保合法 Markdown：`# 主标题` + 至少一节 `## 内容` |
+| 验证失败（首张非标题页/缺标题/缺模板） | `❌ 验证失败` 列具体 errors exit(1) | 按 errors 修正：首张必须 `# 标题`，每页要有标题 |
+| 单页内容过长 | **自动拆分多页**（splitSlide，非失败） | 正常行为，无需干预；maxItems 见各模板配置 |
+| `npm run build` 失败（HTML） | vite 报错中断 | 多为图片路径无效或 JS 语法错；检查 `./assets/` 引用 |
+| PPTX 导出异常 | catch 打印 `error.message + stack` exit(1) | 看堆栈定位 PptxGenJS 调用问题 |
+
+## 反例（不要做）
+
+- ❌ 修改封面固定规范（Logo/Slogan/背景/楷体主标题）——品牌强制要求，不可更改
+- ❌ 改动中信配色（`design-tokens.js` 固定，HTML/PPTX 共享）
+- ❌ 跳过 `validate` 直接导出——会输出结构错误的 PPTX
+- ❌ 因内容长就手动省略要点——`optimizeContent` 会自动拆分多页，**必须保留全部内容**
+
 ## 技术栈
 
 - **GSAP** ^3.12.5（HTML 动画）/ **PptxGenJS** ^4.0.1（PPTX 生成）/ **marked** ^12.0.0（Markdown 解析）/ **Vite** ^5.4.0 + vite-plugin-singlefile（构建单文件 HTML）
