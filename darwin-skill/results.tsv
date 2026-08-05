@@ -18,3 +18,4 @@
 2026-08-05T08:54	baseline	ui-ux-pro-max	-	69.9	baseline	-	初始基线triage(SKILL.md缺frontmatter)	dry_run
 2026-08-05T10:21	paired(53c5043)	news-count-report	round1	3-0 better	keep	d3/d6/d8/d9	修正report.py一致性+补失败模式反例,3 judge clear better,HL-4收工	paired
 2026-08-05T11:22	paired(9477c2d)	slide-craft	round1	3-0 better	keep	d7/d8	删冗余(FAQ/技术架构/更新日志)核心全保留,3 judge clear better,进round2补d3	paired
+2026-08-05T13:40	paired(4f348f4)	slide-craft	round2	3-0 better	keep	d3/d9	补失败模式表(6条经脚本核验)+反例(4条),3 judge clear better,HL-4收工	paired
