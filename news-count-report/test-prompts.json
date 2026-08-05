@@ -1,0 +1,5 @@
+[
+  {"id": 1, "prompt": "生成今天的新闻词频统计日报", "expected": "调用 report.py 抓取今日数据，生成 Markdown 对比表格并发送到飞书群"},
+  {"id": 2, "prompt": "看看昨天各关键词的新闻数量变化", "expected": "正确解析'昨天'日期，对比今日 vs 昨日趋势，生成报告"},
+  {"id": 3, "prompt": "用 --dry-run --date 2026-03-31 先测试一下，别发飞书", "expected": "使用 --dry-run --date 参数，只打印报告不发送"}
+]

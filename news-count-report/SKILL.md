@@ -1,57 +1,55 @@
 ---
 name: news-count-report
 description: >
-  新闻词频统计日报：从 news.liuliang.world API 获取各关键词今日/昨日的新闻数量，
-  对比变化趋势，生成 Markdown 对比报告并发送到飞书群。专为定时任务设计，支持无人值守运行。
-  当用户提到新闻统计日报、词频报告、word-count report、news count report、新闻抓取统计时使用。
+  新闻词频统计日报：从 news.liuliang.world API 取固定关键词昨日/前日新闻数量，
+  对比趋势，生成飞书交互式卡片发群。专为定时任务，无人值守。
+  触发：新闻统计日报、词频报告、word-count report、news count report。
 ---
 
 # 新闻词频统计日报
 
+对比**昨日 vs 前日**固定关键词新闻数量，生成飞书交互式卡片发到固定群。
+
 ## 执行方式
 
-直接运行 Python 脚本完成所有工作（抓取数据、对比分析、生成报告、发送飞书）：
-
 ```bash
 python3 scripts/report.py
 ```
 
-### 参数
-
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `--chat-id` | `oc_578717a43c0e5011765d9cada71d8218` | 飞书群 chat_id |
-| `--dry-run` | false | 只打印报告不发送飞书 |
-| `--api-url` | `http://news.liuliang.world/api/word-count-stats` | API 地址 |
-| `--date` | 今天 | 覆盖"今天"日期 (YYYY-MM-DD)，用于测试 |
-
-### 示例
+| 参数 | 默认 | 说明 |
+|------|------|------|
+| `--chat-id` | `oc_578717a43c0e5011765d9cada71d8218` | 飞书群 |
+| `--dry-run` | false | 只打印不发 |
+| `--api-url` | `http://news.liuliang.world/api/word-count-stats` | API |
+| `--date` | 今天 | 覆盖基准日；基准-1=昨日，-2=前日 |
 
 ```bash
-# 正常运行（发送到默认飞书群）
-python3 scripts/report.py
-
-# 只看报告不发送
-python3 scripts/report.py --dry-run
-
-# 指定日期测试
-python3 scripts/report.py --dry-run --date 2026-03-31
+python3 scripts/report.py --dry-run --date 2026-03-31   # 指定基准日测试
 ```
 
-## 报告内容
+## 报告内容（飞书 interactive 卡片）
 
-报告为 Markdown 格式，包含：
+1. **汇总行**：昨日总条数 + 高分条数，附 vs 前日变化（`↑+N` / `↓-N` / `→0`）
+2. **4 固定关键词**：养老 / 公积金 / 政府基金 / 中国烟草，各列条数、高分数、变化
+3. **江苏省国资委明细**：官网(customGrab) / 官微(wechat) 分布 + 前日对比
 
-1. **对比表格**：每个关键词的新闻总量和高分新闻数量，今日 vs 昨日
-2. **江苏省国资委明细**：官网 (customGrab) 和官微 (wechat) 的来源分布
-3. **合计行**：所有关键词的总计数据
+关键词在 `scripts/report.py` 的 `DISPLAY_KEYWORDS` 硬编码。**非 Markdown 表格，无合计行**。
 
-## 数据源
+## 日期换算
 
-- API: `http://news.liuliang.world/api/word-count-stats`
-- 返回所有关键词×日期的统计数据（newsCount, highScoreCount, customGrabCount, wechatCount 等）
+API 记录带 `fetchdate`(UTC)，脚本按其精确匹配过滤。北京零点 − 8h = fetchdate（北京 3/31 → `2026-03-30T16:00:00.000Z`）。
 
-## 日期处理
+## 失败模式与处置
 
-API 的 fetchdate 使用 UTC 时间，对应北京时间凌晨零点减 8 小时：
-- 北京时间 3月31日 = fetchdate `2026-03-30T16:00:00.000Z`
+| 触发 | 脚本行为 | 处置 |
+|---|---|---|
+| API 超时(>30s)/不可达 | `exit(1)` 无重试 | 次日定时补跑；手动重试先确认 API |
+| 昨日无数据（周末/节假日） | WARNING + 生成 0 值卡片发送 | 正常，无需干预 |
+| `lark-cli` 未找到 | `exit(1)` | 先 `lark-cli auth login` |
+| 飞书发送失败 | `exit(1)` 无落盘 | `--dry-run` 验证后重试 |
+
+## 反例（不要做）
+
+- ❌ 改 `DISPLAY_KEYWORDS` 换关键词（需业务确认）
+- ❌ 绕过 `--dry-run` 对未知日期直接正式发送
+- ❌ 编造 API 未返回的数据；把卡片当 Markdown 表格输出（飞书不支持，已用卡片）
