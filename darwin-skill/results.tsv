@@ -16,3 +16,4 @@
 2026-08-05T08:54	baseline	slide-craft	-	57.2	baseline	-	初始基线triage	dry_run
 2026-08-05T08:54	baseline	think-think	-	65.4	baseline	-	初始基线triage	dry_run
 2026-08-05T08:54	baseline	ui-ux-pro-max	-	69.9	baseline	-	初始基线triage(SKILL.md缺frontmatter)	dry_run
+2026-08-05T10:21	paired(53c5043)	news-count-report	round1	3-0 better	keep	d3/d6/d8/d9	修正report.py一致性+补失败模式反例,3 judge clear better,HL-4收工	paired
